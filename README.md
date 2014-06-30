@@ -39,10 +39,12 @@ The server component uses a collection of Java libraries:
 * httpcore-4.1 - Apache License
 * jackson-all.1.8.2, http://docs.codehaus.org/display/JACKSON/Home - Apache License 
 * joda-time-1.6.2, http://joda-time.sourceforge.net/license.html - Apache License
-* jstl
-* xalan
+* jstl, https://jstl.java.net/license.html - GNU General Public License
+* xalan, http://xml.apache.org/xalan-j/#license - Apache License 2.0
 
- 
+## License
+
+The Time4Maps project is licensed under The Apache Software License, Version 2.0 
 
 ## Contact
 
