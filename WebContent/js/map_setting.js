@@ -66,8 +66,8 @@ function initializeMapping() {
         onItem: function(item, request) {
             period_JSON = item;
         }
-    });
-
+    }); 
+    
     map = new ol.Map({
         renderer: "canvas",
         target: "map",
@@ -168,8 +168,7 @@ function initializeMapping() {
     }
 
     //initialize map params
-    setLegendValues(0);
-
+    setLegendValues(layer_Array.length - 1); 
     if (markers != null) {
         markers = null;
     }
@@ -190,8 +189,7 @@ function setLegendValues(pos_Array) {
             legend_JSON = item;
         }
     });
-
-    //Hannes 11.02.2013
+ 
     if (legend_JSON.url === null || legend_JSON.url == "" || legend_JSON.url === undefined || legend_JSON.url[pos_Array] === "null" || legend_JSON.url[pos_Array] === null || legend_JSON.url[pos_Array] === undefined) {
         hideLegend();
     } else {
@@ -205,8 +203,7 @@ function setLegendValues(pos_Array) {
 
         //set visibility for legend image
         showLegend();
-
-        //Hannes 20.02.2013 
+ 
         dojo.byId('legend_frame').src = legend_JSON.url[pos_Array] + "&height=" + legend_JSON.height[pos_Array] + "&width=" + legend_JSON.width[pos_Array];
     }
 }
@@ -241,13 +238,11 @@ function setMapTime(date_JSDate) {
                     'time': newD
                 });
                 lastDate = newD;
-            } else {
-                //CH 2013-04-09 Mozilla verschluckt sich am Datum 
+            } else { 
                 newD = cutDate(lastDate);
                 layer_Array[i].getSource().updateParams({
                     'time': newD
-                });
-                //layer_Array[i].mergeNewParams({ 'time': date_JSDate }); 
+                }); 
             }
         } else {
             layer_Array[i].getSource().updateParams({
