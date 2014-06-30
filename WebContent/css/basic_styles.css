@@ -1,0 +1,265 @@
+body { 
+  	background-color:#DCEBF0; 
+  	color:#666666;
+	font-family:sans-serif; 
+  	font-size:small; 
+  	font-weight:normal; 
+  	margin:0; 
+  	padding:0;  
+} 
+
+/* ------------------- HEADINGS ------------------- */
+
+h1,h2 {
+	font-family:"Myriad Pro","Helvetica Neue",Helvetica,Arial,Sans-Serif;
+	text-shadow:0px 1px 1px silver;
+}
+
+h1 {
+  	color:#007C95;
+	display:inline; 
+	font-size:2.5em; 
+	font-weight:normal;
+	letter-spacing:0.01em;;
+  	position:absolute; 
+	text-transform:uppercase;
+	width:300px;
+}
+
+h2 {
+	display:inline;
+	font-size: 1.5em;
+	font-weight:normal;
+	margin-bottom: 1em;
+	letter-spacing:0.01em;
+	text-transform:uppercase;
+}
+
+/* ------------------- STYLE LINES ------------------- */
+
+.line { 
+	margin:auto;
+	background-color: #F9B200;
+	border-style: none;
+	border-width: 1px;
+	clear: left;
+	height: 1px;
+	margin: 0.5em 0;
+	overflow: hidden;
+}
+
+.line_grey { 
+	background-color:silver;
+	border-bottom-color:silver;
+	border-width:1px;
+	height:1px;
+	margin:1.3em 0;
+	clear:left;margin-top:40px;
+}
+
+/* ------------------- PAGE BASICS ------------------- */
+
+#page {	
+  	background-color:#FFF;    
+  	margin: 20px 0 0;
+	padding-left: 30px;
+  	padding-right: 30px;
+  	padding-top: 10px;
+  	padding-bottom: 40px; 
+  	position:absolute;
+	top:10px;
+	left:70px;
+	width:1150px;
+	height:750px; 
+}
+
+/* ------------------- HEADER WITH TITLE AND LOGO ------------------- */
+
+div.header_logo { 
+  background-image:url(../images/LAMA_logo.gif);
+  background-position:right; 
+  background-repeat:no-repeat;
+  height:65px; 
+  padding-top:5px;   
+  position:relative; 
+  width:100%;
+}
+
+div.header_title {
+  position:absolute;
+  background-position:left;
+  top:20px;  
+}
+
+/* ------------------- GENERAL DESCRIPTIONS ------------------- */
+
+div.content_description {
+   color:#666666;
+   margin:1em 0 0;
+   position:absolute;
+   left:100px;
+   top:115px;
+}
+
+/* ------------------- TIME DESCRIPTIONS ------------------- */
+
+div.content_time {
+  padding-top:1em;
+  width:800px;
+  clear:left;
+  padding-top:20px;
+  z-index:1000000;
+  position:absolute;
+  left:100px;
+  top:640px;
+}
+
+label.right {
+  	float:right; 
+	vertical-align:middle;    
+}
+
+#time_start_label {
+  padding-bottom:10px;
+  float:left; padding-top:10px;
+}
+
+#time_end_label {
+  padding-bottom:10px;
+}  
+
+/* setting buttons in same size */
+.dijitButtonText {
+  width:100px;
+}
+
+/* ------------------- MAP AND LEGEND ------------------- */
+
+div.map {
+  float:left;  
+  padding-top:20px;
+  padding-bottom:20px; 
+  position:absolute;
+  top:161px;
+  left:98px;
+  height:470px;
+  width:800px;
+  border-width:1px;
+  border-style:solid;
+  border-color:silver; 
+}
+
+div.map2 {
+  float:left; 
+  height:450px;
+  padding-top:20px;
+  padding-bottom:20px; 
+  position:absolute; 
+  height:300px;
+  width:450px;
+  border-width:1px;
+  border-style:solid;
+  border-color:silver; 
+}
+
+div.map3 {
+  float:left; 
+  height:450px;
+  padding-top:20px;
+  padding-bottom:20px; 
+  position:absolute; 
+  height:300px;
+  width:450px;
+  border-width:1px;
+  border-style:solid;
+  border-color:silver; 
+}
+
+#legend_frame { 
+  /*position:absolute;top:160px;left:950px;*/
+}
+
+/* ------------------- FOOTER ------------------- */
+
+div.footer {
+	font-size:0.825em;
+	margin-bottom:30px; 
+	text-align:left;
+	position:absolute;top:720px;left:100px;width:1150px;
+}
+
+div.footer a, div.footer a:visited {
+	border-width: 3px;
+	color:#007C95;
+	display:block;
+	float:left; 
+	position:relative;
+	z-index:100;
+}
+
+div.footer a:hover {
+	text-decoration:underline;
+}
+
+div.footer p { 
+  	float:left;
+  	margin-left:5px;  
+  	margin-top:0;
+	position:relative;  
+}
+
+#footer_link_glues {
+  	clear:left; 
+  	margin-top:-10px;
+}
+ 
+#footer_redesign {
+  	float:right;
+}
+
+div.olMap {
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+#featureInfo_div {
+	width:280px;
+	height:180px;
+	position:absolute;
+	top:450px;
+	left:950px;
+	border-width:1px;
+	border-style:solid;
+	border-color:silver;
+}
+
+#featureInfo_div2 {
+	width:280px;
+	height:180px;
+	position:absolute;
+	top:450px;
+	left:950px;
+	border-width:1px;
+	border-style:solid;
+	border-color:silver;
+}
+
+#fromDate_Input_popup {
+	z-index:23;
+}
+
+#fromDate_Input, #widget_fromDate_Input {
+	z-index:10000 !important;
+}
+
+.dijitReset dijitRight dijitButtonNode dijitArrowButton dijitDownArrowButton dijitArrowButtonContainer {
+	z-index:10000 !important;
+}
+
+img .decoded {
+	width:300px;
+}
+
+#OpenLayers_Control_MaximizeDiv {
+	/*left: 282px !important; */	
+}
