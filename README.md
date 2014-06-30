@@ -42,9 +42,7 @@ The server component uses a collection of Java libraries:
 * jstl
 * xalan
 
-## License
-
-The Time4Maps project is licensed under The Apache Software License, Version 2.0
+ 
 
 ## Contact
 
