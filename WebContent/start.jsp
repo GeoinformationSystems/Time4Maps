@@ -146,7 +146,8 @@
    	<div id="legend_div" style="left:930px;top:160px;position:absolute;height:280px;width:330px;overflow:auto;">  
     	<img style="border:none;" id="legend_frame">  
   	</div>
-   	<div id="layerSwitcherCustom" style="background-color:white;top:162px !important;left:599px;position:absolute;width:300px;height:200px;"></div>
+   	<div id="layerSwitcherCustom" style="background-color:white;top:162px !important;left:599px;position:absolute;"></div>
+   	
    	<div id="printdiv" style="position:absolute; left: 1030px; top: 665px;">
     	<div id="print_div"></div>
     </div>
