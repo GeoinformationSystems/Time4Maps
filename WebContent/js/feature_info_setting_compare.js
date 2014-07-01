@@ -1,18 +1,18 @@
 /**
  * Copyright 2012 Geoinformation Systems, TU Dresden
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 /**
@@ -25,6 +25,7 @@ var markers;
 var service_url, service_version, service_srs;
 var markers2;
 var service_url2, service_version2, service_srs2;
+var featureInfoUrl, featureInfoUrl2;
 
 /**
  * This method is used to register an event listener that sets the marker on the map, when the user has clicked into the map.
@@ -60,6 +61,7 @@ function bindFeatureControls(time_info) {
     service_srs2 = wmsDescription_Store2.getValue(service_JSON2, "srs");
 
     map.on("singleclick", function(evt) {
+        last_event = evt.coordinate;
         map.getLayers().forEach(function(layer) {
             if (layer.getProperties().title === layer_Array[vis_layer_number].getProperties().title) {
                 var resolution = map.getView().getResolution();
@@ -67,6 +69,7 @@ function bindFeatureControls(time_info) {
                 var source = layer.getSource().getGetFeatureInfoUrl(evt.coordinate, resolution, projection, {
                     "INFO_FORMAT": "text/html",
                 });
+                featureInfoUrl = source;
                 if (typeof source != null) {
                     require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                         var sourceObject = ioQuery.queryToObject(source);
@@ -139,6 +142,7 @@ function bindFeatureControls(time_info) {
                 var source = layer.getSource().getGetFeatureInfoUrl(evt.coordinate, resolution, projection, {
                     "INFO_FORMAT": "text/html",
                 });
+                featureInfoUrl2 = source;
                 if (typeof source != null) {
                     require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                         var sourceObject = ioQuery.queryToObject(source);
@@ -156,6 +160,7 @@ function bindFeatureControls(time_info) {
     });
 
     map2.on("singleclick", function(evt) {
+        last_event = evt.coordinate;
         map2.getLayers().forEach(function(layer) {
             if (layer.getProperties().title === layer_Array2[vis_layer_number2].getProperties().title) {
                 var resolution = map2.getView().getResolution();
@@ -163,6 +168,7 @@ function bindFeatureControls(time_info) {
                 var source = layer.getSource().getGetFeatureInfoUrl(evt.coordinate, resolution, projection, {
                     "INFO_FORMAT": "text/html",
                 });
+                featureInfoUrl2 = source;
                 if (typeof source != null) {
                     require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                         var sourceObject = ioQuery.queryToObject(source);
@@ -235,6 +241,7 @@ function bindFeatureControls(time_info) {
                 var source = layer.getSource().getGetFeatureInfoUrl(evt.coordinate, resolution, projection, {
                     "INFO_FORMAT": "text/html",
                 });
+                featureInfoUrl = source;
                 if (typeof source != null) {
                     require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                         var sourceObject = ioQuery.queryToObject(source);
