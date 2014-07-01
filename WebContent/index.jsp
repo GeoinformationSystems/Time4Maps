@@ -140,7 +140,7 @@
         <div id="legend_div" style="left:830px;top:60px;position:absolute;height:280px;width:330px;overflow:auto;">  
             <img style="border:none;" id="legend_frame"><!-- /IFrame -->  
       	</div>
-      	<div id="layerSwitcherCustom" style="background-color:white;top:61px;position:absolute;width:300px;height:200px;left:511px;"></div>
+      	<div id="layerSwitcherCustom" style="background-color:white;top:61px;position:absolute;left:511px;"></div>
         <div id="printdiv" style="position: absolute; left:930px; top:565px">
             <div id="print_div"></div>
         </div>
