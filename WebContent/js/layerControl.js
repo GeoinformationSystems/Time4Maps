@@ -114,9 +114,11 @@ function initLayerControlWidget() {
 	                        } else {
 	                            layer.setVisible(false);
 	                        }
-	                        updateLegend();
-	                        //change LAyerLegend
-	
+	                        
+	                        //always call updateLegend() first - it resets var vis_layer_numbers, that is used in updateTimeValues()
+	                        updateLegend(); //change layer legend 
+	                        updateTimeValues();
+	                        updateFeatureInfo();
 	                    }
 	                }, layer.getProperties().title + "_area");
 	
@@ -186,9 +188,10 @@ function updateLayerControlWidget() {
             domConstruct.destroy(node);
         });
         initLayerControlWidget();
+        //always call updateLegend() first - it resets var vis_layer_numbers, that is used in updateTimeValues()
         updateLegend();
         updateTimeValues();
-
+        updateFeatureInfo();
     });
 }
 
@@ -197,8 +200,29 @@ function updateLegend() {
         for (var i = map.getLayers().array_.length - 1; i > 0; i--) {
             if (dom.byId(map.getLayers().array_[i].getProperties().title + "_checkbox").checked) {
                 setLegendValues(i - 1);
+                vis_layer_number = i - 1;
                 break;
             }
         }
     });
+}
+
+function updateFeatureInfo() {
+	if (last_event != null) { 
+        var source = featureInfoUrl; 
+        var layer_JSON;
+        wmsDescription_Store.fetchItemByIdentity({
+            identity: "layerDescriptionParam",
+            onItem: function(item, request) { layer_JSON = item; }
+        });
+        
+        
+        if (typeof source != null) {
+            require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
+                var sourceObject = ioQuery.queryToObject(source);
+                var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + layer_JSON.name[vis_layer_number] + "&crs=" + sourceObject.SRS + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + sourceObject.X + "&J=" + sourceObject.Y + "&time=" + cutDate(dijit.byId('time_slider').get('value'));
+                domAttr.set("featureInfo_frame", "src", url);
+            });
+        }
+    }
 }

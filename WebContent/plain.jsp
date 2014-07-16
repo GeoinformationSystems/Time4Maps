@@ -149,6 +149,7 @@
 						<label style="padding-top: 40px;">current time step: </label> <input
 							id="stateSelect" style="visibility: hidden;z-index: 120 !important;">
 						<input id="fromDate_Input" />
+						<label id="time_period_label" style="padding-top:20px;">period: </label>
 					</div>
 						
 						<div id="playdiv" style="margin-left:-5px;padding-top:10px;">

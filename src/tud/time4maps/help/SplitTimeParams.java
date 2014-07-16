@@ -46,11 +46,14 @@ public class SplitTimeParams {
 		Vector endD = new Vector();
 		Vector steps = new Vector();
 		Vector defaultD = new Vector();
-		Vector periode = new Vector();
+		Vector periodVector = new Vector();
 		Vector periodYear = new Vector();
 		Vector periodMonth = new Vector();
 		Vector periodDay = new Vector();
-
+		Vector periodHour = new Vector();
+		Vector periodMinute = new Vector();
+		Vector periodSecond = new Vector();
+		
 		Map<String, Object> time = new HashMap<String, Object>();
 		Map<String, Object> period = new HashMap<String, Object>();
 		period.put("paramName", "periodParam");
@@ -81,22 +84,31 @@ public class SplitTimeParams {
 				} 
 			}
 
-			periode.add(getPeriod(timeVals));
+			periodVector.add(getPeriod(timeVals));
 
-			if (((Period) periode.get(i)) != null) {
-				periodYear.add((((Period) periode.get(i)).getYears()));
-				periodMonth.add((((Period) periode.get(i)).getMonths()));
-				periodDay.add((((Period) periode.get(i)).getDays()));
+			if (((Period) periodVector.get(i)) != null) {
+				periodYear.add((((Period) periodVector.get(i)).getYears()));
+				periodMonth.add((((Period) periodVector.get(i)).getMonths()));
+				periodDay.add((((Period) periodVector.get(i)).getDays()));
+				periodHour.add((((Period) periodVector.get(i)).getHours()));
+				periodMinute.add((((Period) periodVector.get(i)).getMinutes()));
+				periodSecond.add((((Period) periodVector.get(i)).getSeconds()));
 			} else {
 				periodYear.add(null);
 				periodMonth.add(null);
 				periodDay.add(null);
+				periodHour.add(null);
+				periodMinute.add(null);
+				periodSecond.add(null);
 			}
 		}
 
 		period.put("year", periodYear);
 		period.put("month", periodMonth);
 		period.put("day", periodDay);
+		period.put("hour", periodHour);
+		period.put("minute", periodMinute);
+		period.put("second", periodSecond);
 
 		time.put("paramName", "timeParam");
 		time.put("start", startD);
@@ -194,14 +206,19 @@ public class SplitTimeParams {
 		if (timeVals_.length == 3 || timeVals_.length == 2) {
 			if (timeVals_[1].contains("T00:00:00.000Z"))
 				timeVals_[1] = timeVals_[1].replace("T00:00:00.000Z", "");
+			timeVals_[1] = timeVals_[1].replace("Z", "");
+			
 			endDate = new DateTime(timeVals_[1]);
 			return endDate.toDate();
+			
 		} else if (timeVals_.length == 1 && timeVals_[0] != null && timeVals_[0] != "") {
 			if (timeVals_[0].contains(","))
 				timeVals_ = timeVals_[0].split(",");
+			
 			if (timeVals_[timeVals_.length - 1] != "") {
 				if (timeVals_[timeVals_.length - 1].contains("T00:00:00.000Z"))
 					timeVals_[timeVals_.length - 1] = timeVals_[timeVals_.length - 1].replace("T00:00:00.000Z", "");
+				timeVals_[1] = timeVals_[1].replace("Z", "");
 				endDate = new DateTime(timeVals_[timeVals_.length - 1]);
 				return endDate.toDate();
 			}
@@ -222,13 +239,14 @@ public class SplitTimeParams {
 
 		if (timeVals_.length == 3 || timeVals_.length == 2) {
 			if (timeVals_[0].contains("T00:00:00.000Z"))
-				timeVals_[0] = timeVals_[0].replace("T00:00:00.000Z", "");
-
+				timeVals_[0] = timeVals_[0].replace("T00:00:00.000Z", ""); 
+			timeVals_[0] = timeVals_[0].replace("Z", ""); 
 			startDate = new DateTime(timeVals_[0]);
 
 			if (startDate.getYear() < minYear)
 				startDate = startDate.plusYears(minYear - startDate.getYear());
 			return startDate.toDate();
+			
 		} else if (timeVals_.length == 1 && timeVals_ != null
 				&& timeVals_[0] != "") {
 			if (timeVals_[0].contains(","))
@@ -240,6 +258,8 @@ public class SplitTimeParams {
 
 				if (timeVals_[0].contains("T00:00:00.000Z"))
 					timeVals_[0] = timeVals_[0].replace("T00:00:00.000Z", "");
+				
+				timeVals_[0] = timeVals_[0].replace("Z", "");
 
 				startDate = new DateTime(timeVals_[0]);
 				return startDate.toDate();

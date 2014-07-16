@@ -50,10 +50,7 @@ function bindFeatureControls(time_info) {
         map.getLayers().forEach(function(layer) {
             if (layer.getProperties().title === layer_Array[vis_layer_number].getProperties().title) {
                 var resolution = map.getView().getResolution();
-                var projection = map.getView().getProjection();
-                console.log(evt.coordinate);
-                console.log(resolution);
-                console.log(projection);
+                var projection = map.getView().getProjection(); 
                 var source = layer.getSource().getGetFeatureInfoUrl(evt.coordinate, resolution, projection, {
                     "INFO_FORMAT": "text/html",
                 });

@@ -207,7 +207,7 @@ public class EvaluatingRequestResponse {
         String[] layerDimension_ = new String[layerName_.length];
         String[] defaultTime_ = new String[layerName_.length];
         
-        for (int i=0; i< layerName_.length; i++) {
+        for (int i = 0; i < layerName_.length; i++) {
             String xpLayerDimension_ = "//Layer[./Name='"+ layerName_[i] + "']/"+timeTag+"/text()";
             layerDimension_[i] = (String) exp.getXPathResult(xpLayerDimension_, new String(), nl);
             layerDimension_[i] = layerDimension_[i].trim();	

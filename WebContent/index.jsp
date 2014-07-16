@@ -125,10 +125,11 @@
                 <label style="padding-top:10px;">current time step: </label>
                 <input id="stateSelect" style="visibility:hidden;float: left;padding-left: 70px;padding-top: 10px;z-index: 120 !important;">
                 <input id="fromDate_Input"/>
+                <label id="time_period_label" style="padding-top:20px;">period: </label>
             </div>
             <label id="time_end_label" class="right" style="padding-top:10px;">end time</label>            
             <div id="play">
-                <div id="playdiv" style="padding-left:450px;padding-top:5px;">
+                <div id="playdiv" style="padding-left:550px;padding-top:5px;">
                     <div id="play_div"></div>
                 </div>
                 <div id="time_slider" style="z-index:-12 !important;"></div>								

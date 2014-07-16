@@ -67,7 +67,7 @@ function initializeMapping() {
             period_JSON = item;
         }
     }); 
-    
+     
     map = new ol.Map({
         renderer: "canvas",
         target: "map",
@@ -97,6 +97,7 @@ function initializeMapping() {
         ]
     });
 
+    vis_layer_number = layer_JSON.name.length - 1;
     layer_Array = new Array(layer_JSON.name.length);
 
     //parse all layers and decide whether there should be loaded time gui (slider, combobox) or not
@@ -230,10 +231,10 @@ function showLegend() {
 var lastDate;
 
 function setMapTime(date_JSDate) {
-    for (var i = 0; i < layer_Array.length; i++) {
+	for (var i = 0; i < layer_Array.length; i++) {
         if (combo == false) {
             var newD = cutDate(date_JSDate);
-            if (newD != "0NaN-NaN" && newD != "0NaN") {
+            if (newD != "0NaN-NaN" && newD != "0NaN") { 
                 layer_Array[i].getSource().updateParams({
                     'time': newD
                 });
@@ -245,6 +246,11 @@ function setMapTime(date_JSDate) {
                 }); 
             }
         } else {
+        	
+        	if (date_JSDate.indexOf("+02:00") > 0) { 
+        		date_JSDate = date_JSDate.replace(/\+02:00/g, "0Z");
+        	}
+        	
             layer_Array[i].getSource().updateParams({
                 'time': date_JSDate
             });

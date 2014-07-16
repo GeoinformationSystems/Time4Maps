@@ -18,7 +18,8 @@
 dojo.require("dojox.form.RangeSlider");    
 dojo.require("dojo.data.ItemFileReadStore");  
 dojo.require("dojo.date");                  
-dojo.require("dijit.form.DateTextBox");     
+dojo.require("dijit.form.DateTextBox"); 
+dojo.require("dijit.form.TimeTextBox"); 
 dojo.require("dijit.form.Slider");
 dojo.require("dijit.form.HorizontalSlider");
 dojo.require("dijit.form.HorizontalRule");

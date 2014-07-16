@@ -78,8 +78,7 @@ public class CapabilitiesRequest {
 	 * @param wmsUrl - the wms request url
 	 * @return response document 
 	 */
-	public static Document doRequest(String wmsUrl) {  
-		System.out.println("CapRequest WMS URL: " + wmsUrl);
+	public static Document doRequest(String wmsUrl) {   
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         // factory.setNamespaceAware( true ); factory.setValidating( true );
 		try {
