@@ -59,10 +59,30 @@ function bindFeatureControls(time_info) {
                     require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                         var sourceObject = ioQuery.queryToObject(source);
                         if (time_info === "time") {
-                            var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + sourceObject.SRS + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + sourceObject.X + "&J=" + sourceObject.Y + "&time=" + sourceObject.time;
+                            var url = "featureInfo_compare.jsp?url=" 
+                                    + service_url + "&request=GetFeatureInfo&service=WMS" 
+                                    + "&version=" + sourceObject.VERSION 
+                                    + "&query_layers=" + sourceObject.QUERY_LAYERS 
+                                    + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) 
+                                    + "&bbox=" + sourceObject.BBOX 
+                                    + "&width=" + sourceObject.WIDTH 
+                                    + "&height=" + sourceObject.HEIGHT 
+                                    + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) 
+                                    + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J)
+                                    + "&time=" + sourceObject.time;   
                             domAttr.set("featureInfo_frame", "src", url);
                         } else {
-                            var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J) + "&time=x";
+                            var url = "featureInfo_compare.jsp?url=" 
+                                    + service_url + "&request=GetFeatureInfo&service=WMS" 
+                                    + "&version=" + sourceObject.VERSION 
+                                    + "&query_layers=" + sourceObject.QUERY_LAYERS 
+                                    + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) 
+                                    + "&bbox=" + sourceObject.BBOX 
+                                    + "&width=" + sourceObject.WIDTH 
+                                    + "&height=" + sourceObject.HEIGHT 
+                                    + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) 
+                                    + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J) 
+                                    + "&time=x";
                             domAttr.set("featureInfo_frame", "src", url);
                         }
                     });

@@ -1,36 +1,59 @@
 /**
  * Copyright 2012 Geoinformation Systems, TU Dresden
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 /**
  * This class handles printing functions.
- * 
+ *
  * @author Hannes Tressel. Professorship of Geoinformation Systems
  */
 function openPrintPreview() {
-    require(["dojo/_base/window", "dojo/dom-construct", "dojox/gfx", "dojo/io-query", "dojo/dom-style", "dojo/dom"], function(win, domConstruct, gfx, ioQuery, domStyle, dom) {
+    require(["dojo/_base/window", "dojo/dom-construct", "dojox/gfx", "dojo/io-query", "dojo/dom-style", "dojo/dom", "dojo/query", "dojo/NodeList-traverse"], function(win, domConstruct, gfx, ioQuery, domStyle, dom, query) {
         var pWindowSettings = "width=" + window.screen.width / 1.3 + ", height=" + window.screen.height / 1.3 + ", scrollbars=yes";
         var pWindow = window.open("", "", pWindowSettings);
+        var windowWidth = window.screen.width / 1.3;
         var map2_ = false;
         if (dom.byId("map2") != null) {
             map2_ = true;
         }
 
-        var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
-        var featureInfo_height = domStyle.get("featureInfo_frame", "height") + 10;
+        if (!map2_) {
+            var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
+            var featureInfo_label = query("label", dom.byId("featureInfo_frame").contentDocument.body)[0].innerHTML;
+            var featureInfo_height = domStyle.get("featureInfo_frame", "height") + 10;
+        } else {
+            var featureInfo1 = dom.byId("featureInfo_frame1").contentDocument.body.innerHTML;
+            var featureInfo2 = dom.byId("featureInfo_frame2").contentDocument.body.innerHTML;
+            var featureInfo_label1 = null;
+            var featureInfo_label2 = null;
+            var featureInfo_height1 = domStyle.get("featureInfo_frame1", "height") + 10;
+            var featureInfo_height2 = domStyle.get("featureInfo_frame2", "height") + 10;
+
+            query("#feature_label", dom.byId("featureInfo_frame1").contentDocument.body).forEach(function(node){
+            	featureInfo_label1 = query("div:first-of-type", node).forEach(function(node_){
+                    return node_.innerHTML;
+                })[0].innerHTML;
+            });
+            
+            query("#feature_label", dom.byId("featureInfo_frame2").contentDocument.body).forEach(function(node){
+            	featureInfo_label2 = query("div:first-of-type", node).forEach(function(node_){
+                    return node_.innerHTML;
+                })[0].innerHTML;
+            });
+        }
 
         var service_JSON = null;
         wmsDescription_Store.fetchItemByIdentity({
@@ -61,6 +84,26 @@ function openPrintPreview() {
 
         /*focus popup*/
         win.setContext(pWindow, pWindow.document);
+        domStyle.set(win.body(), "width", "99%");
+        var bodyWidth = windowWidth*0.99;
+
+        domConstruct.create("div", {
+            id: "wrapper",
+            style: {
+                "position": "relative",
+                "width": "90%",
+                "marginLeft": "auto",
+                "marginRight": "auto"
+            }
+        }, win.body());
+        var wrapperWidth = bodyWidth * 0.90;
+
+        domConstruct.create("section", {
+            id: "headings",
+            style: {
+                "marginTop":" 10px"
+            }
+        }, "wrapper");
 
         domConstruct.create("h1", {
             innerHTML: "Name of this service: " + service_JSON.title[0],
@@ -68,7 +111,7 @@ function openPrintPreview() {
                 fontFamiliy: "'Myriad Pro','Helvetica Neue',Helvetica,Arial,Sans-Serif",
                 textShadow: "0px 1px 1px silver"
             }
-        }, win.body());
+        }, "headings");
 
         domConstruct.create("h3", {
             innerHTML: "Abstract of this service: " + service_JSON.abstractText[0],
@@ -76,12 +119,16 @@ function openPrintPreview() {
                 fontFamiliy: "'Myriad Pro','Helvetica Neue',Helvetica,Arial,Sans-Serif",
                 textShadow: "0px 1px 1px silver"
             }
-        }, win.body());
+        }, "headings");       
 
-        /* get Map Image */
+        /* get Map Image */       
         var mapImage = null;
         var bbox = "";
         var imageUrl = [];
+
+        var map1Width = wrapperWidth * 0.70;
+
+
 
         map.getLayers().forEach(function(layer) {
 
@@ -92,7 +139,7 @@ function openPrintPreview() {
                     bbox = bbox + extent[i].toString() + ",";
                 }
                 bbox = bbox.substring(0, bbox.length - 1);
-
+                
                 var resolution = map.getView().getResolution();
                 var pixelRatio = 1;
                 var projection = map.getView().getProjection();
@@ -137,70 +184,64 @@ function openPrintPreview() {
             });
         }
 
-        domConstruct.create("div", {
-            id: "leftItemBox",
+        domConstruct.create("section", {
+            id: "MapAndLegend1",
             style: {
-                width: (58 * (window.screen.width / 1.3)) / 100 + "px",
-                height: "400px",
-                float: "left",
-                marginLeft: "10px",
-                backgroundColor: "lightgray"
+                "marginTop":" 10px"
             }
-        }, win.body());
+        }, "wrapper");
 
         domConstruct.create("div", {
-            id: "rightItemBox",
+            id: "map1",
             style: {
-                width: (36 * (window.screen.width / 1.3)) / 100 + "px",
-                height: "400px",
-                float: "right",
-                marginRight: "10px"
+               "display":"inline-flex",
+               "width":"70%",
+               "height":"400px"
             }
-        }, win.body());
+        }, "MapAndLegend1");
 
+        var map1Width = wrapperWidth * 0.70;
+
+        domConstruct.create("div", {
+            id: "legend1",
+            style: {
+               "display":" inline-block",
+               "width":"20%",
+               "height":"400px",
+               "marginLeft":"10px"
+            }
+        }, "MapAndLegend1");
+        var legend1Width = wrapperWidth * 0.20;
 
         /*create & display map and overlay image */
-
-        domConstruct.create("div", {
-            id: "mapSurface",
-            style: {
-                width: domStyle.get("leftItemBox", "width"),
-                height: "400px",
-                margin: "0 auto",
-            }
-        }, "leftItemBox");
-
-        var mapSurface = gfx.createSurface("mapSurface", domStyle.get("leftItemBox", "width"), 400);
+        var mapSurface = gfx.createSurface("map1", map1Width, 400);
         for (var i in imageUrl) {
             mapSurface.createImage({
                 x: 0,
                 y: 0,
-                width: (domStyle.get("leftItemBox", "width") / imageUrl[i].width) * imageUrl[i].width,
+                width: 650,//(map1Width / imageUrl[i].width) * imageUrl[i].width,
                 height: (400 / imageUrl[i].height) * imageUrl[i].height,
                 src: imageUrl[i].url
             });
         }
-
-        /* if overlays are available...*/
+        /* if overlays are available...*/        
         map.getOverlays().forEach(function(overlay) {
             mapSurface.createImage({
-                x: ((domStyle.get("leftItemBox", "width") / map.getSize()[0]) * map.getPixelFromCoordinate(overlay.getProperties().position)[0]) - 21 / 2,
+                x: ((map1Width / map.getSize()[0]) * map.getPixelFromCoordinate(overlay.getProperties().position)[0]) - 21 / 2,
                 y: ((400 / map.getSize()[1]) * map.getPixelFromCoordinate(overlay.getProperties().position)[1]) - 25,
-
                 width: overlay.values_.element.width,
                 height: overlay.values_.element.height,
                 src: overlay.values_.element.src
             });
         });
 
-
-        /* add legend image */
-        var legendSurface = gfx.createSurface("rightItemBox", domStyle.get("rightItemBox", "width"), 400);
-        if (legendImage.width > domStyle.get("rightItemBox", "width")) {
+        /* add legend image */       
+        var legendSurface = gfx.createSurface("legend1", legend1Width, 400);
+        if (legendImage.width > legend1Width) {
             legendSurface.createImage({
                 x: 0,
                 y: 0,
-                width: (domStyle.get("rightItemBox", "width") / legendImage.width) * legendImage.width + "px",
+                width: (legend1Width / legendImage.width) * legendImage.width + "px",
                 height: legendImage.height + "px",
                 src: legendImage.src
             });
@@ -216,56 +257,50 @@ function openPrintPreview() {
         }
 
         if (map2_) {
-            domConstruct.create("div", {
-                id: "leftItemBox2",
+            
+            domConstruct.create("section", {
+            id: "MapAndLegend2",
                 style: {
-                    width: (58 * (window.screen.width / 1.3)) / 100 + "px",
-                    height: "400px",
-                    float: "left",
-                    marginTop: "10px",
-                    marginLeft: "10px",
-                    backgroundColor: "lightgray"
+                    "marginTop":" 1px"
                 }
-            }, win.body());
+            }, "wrapper");
 
             domConstruct.create("div", {
-                id: "rightItemBox2",
+                id: "map2",
                 style: {
-                    width: (36 * (window.screen.width / 1.3)) / 100 + "px",
-                    height: "400px",
-                    float: "right",
-                    marginTop: "10px",
-                    marginRight: "10px"
+                   "display":"inline-flex",
+                   "width":"70%",
+                   "height":"400px"
                 }
-            }, win.body());
+            }, "MapAndLegend2");
+            var map2Width = wrapperWidth * 0.70;
 
+            domConstruct.create("div", {
+                id: "legend2",
+                style: {
+                   "display":" inline-block",
+                   "width":"20%",
+                   "height":"400px",
+                   "marginLeft":"10px"
+                }
+            }, "MapAndLegend2");
+            var legend2Width = wrapperWidth * 0.20;
 
             /*create & display map and overlay image */
-
-            domConstruct.create("div", {
-                id: "mapSurface2",
-                style: {
-                    width: domStyle.get("leftItemBox2", "width"),
-                    height: "400px",
-                    margin: "0 auto",
-                }
-            }, "leftItemBox2");
-
-            var mapSurface2 = gfx.createSurface("mapSurface2", domStyle.get("leftItemBox2", "width"), 400);
+            var mapSurface2 = gfx.createSurface("map2", map2Width, 400);
             for (var i in imageUrl2) {
                 mapSurface2.createImage({
                     x: 0,
                     y: 0,
-                    width: (domStyle.get("leftItemBox2", "width") / imageUrl2[i].width) * imageUrl2[i].width,
+                    width: (map2Width / imageUrl2[i].width) * imageUrl2[i].width,
                     height: (400 / imageUrl2[i].height) * imageUrl2[i].height,
                     src: imageUrl2[i].url
                 });
             }
-
-            /* if overlays are available...*/
+            /* if overlays are available...*/           
             map2.getOverlays().forEach(function(overlay2) {
                 mapSurface2.createImage({
-                    x: ((domStyle.get("leftItemBox2", "width") / map2.getSize()[0]) * map2.getPixelFromCoordinate(overlay2.getProperties().position)[0]) - 21 / 2,
+                    x: ((map2Width / map2.getSize()[0]) * map2.getPixelFromCoordinate(overlay2.getProperties().position)[0]) - 21 / 2,
                     y: ((400 / map2.getSize()[1]) * map2.getPixelFromCoordinate(overlay2.getProperties().position)[1]) - 25,
 
                     width: overlay2.values_.element.width,
@@ -274,14 +309,14 @@ function openPrintPreview() {
                 });
             });
 
-
             /* add legend image */
-            var legendSurface2 = gfx.createSurface("rightItemBox2", domStyle.get("rightItemBox2", "width"), 400);
-            if (legendImage2.width > domStyle.get("rightItemBox2", "width")) {
+            
+            var legendSurface2 = gfx.createSurface("legend2", legend2Width, 400);
+            if (legendImage2.width > legend2Width) {
                 legendSurface2.createImage({
                     x: 0,
                     y: 0,
-                    width: (domStyle.get("rightItemBox2", "width") / legendImage2.width) * legendImage2.width + "px",
+                    width: (legend2Width / legendImage2.width) * legendImage2.width + "px",
                     height: legendImage2.height + "px",
                     src: legendImage2.src
                 });
@@ -297,75 +332,96 @@ function openPrintPreview() {
             }
         }
 
-        domConstruct.create("div", {
+        domConstruct.create("section", {
             id: "featureInfo",
             style: {
-                marginTop: "440px",
-                marginLeft: "auto",
-                marginRight: "auto",
-                width: "98%"
+                "marginTop": "10px"
             }
-        }, win.body());
+        }, "wrapper");
 
-        if (featureInfo != "Click on the map to get feature information.") {
-            domConstruct.create("h3", {
-                id: "featureInfoLabel",
-                innerHTML: "Feature Information",
-                style: {
+        if (!map2_) {
+            if (featureInfo_label != "Click on the map to get feature information.") {
+                domConstruct.create("h3", {
+                    id: "featureInfoLabel",
+                    innerHTML: "Feature Information",
+                    style: {
 
-                }
-            }, "featureInfo");
+                    }
+                }, "featureInfo");
+ 
+                domConstruct.create("article", {
+                    id: "fi1",
+                    innerHTML: featureInfo,
+                    style: {
+                        "display": "inline-block",
+                        "maxWidth": "99%"
+                    }
+                }, "featureInfo");
+            }
+        } else {
+            if (featureInfo_label1 != "Click on the map to get feature information." && featureInfo_label2 != "Click on the map to get feature information.") {
+                
+                domConstruct.create("h3", {
+                    id: "featureInfoLabel",
+                    innerHTML: "Feature Information",
+                    style: {
 
-            domConstruct.create("div", {
-                innerHTML: featureInfo
-            }, "featureInfo");
+                    }
+                }, "featureInfo");
+
+                domConstruct.create("article", {
+                    id: "fi1",
+                    innerHTML: featureInfo1,
+                    style: {
+                        "display": "inline-block",
+                        "maxWidth": "45%",
+                        "marginRight": "4%"
+                    }
+                }, "featureInfo");
+
+                domConstruct.create("article", {
+                    id: "fi2",
+                    innerHTML: featureInfo2,
+                    style: {
+                        "display": "inline-block",
+                        "maxWidth": "45%"
+                    }
+                }, "featureInfo");
+            }
         }
-        /*
-         
-         */
 
-        domConstruct.create("div", {
-            id: "btnArea",
+        domConstruct.create("section", {
+            id: "BtnArea",
             style: {
-                display: "block",
-                position: "relative",
-                top: featureInfo_height + "px",
-                width: "100%",
-                height: "30px"
+                "marginTop": "10px"
             }
-        }, win.body());
+        }, "wrapper");
 
-        domConstruct.create("button", {
+        domConstruct.create("input", {
             type: "button",
-            innerHTML: "Print",
-            style: {
-                position: "absolute",
-                left: "10px",
+            value: "Print",
+            style:{
                 width: "100px",
-                height: "25px"
+                height: "25px",
+                "marginLeft": "30px"
             },
             onclick: function() {
                 pWindow.print();
             }
-        }, "btnArea");
+        }, "BtnArea");
 
-        domConstruct.create("button", {
+        domConstruct.create("input", {
             type: "button",
-            innerHTML: "Cancel",
-            style: {
-                position: "absolute",
+            value: "Cancel",
+            style:{
                 width: "100px",
                 height: "25px",
-                left: "160px"
+                "marginLeft": "30px"
             },
             onclick: function() {
                 pWindow.close();
             }
-        }, "btnArea");
-
-
-
-        //pWindow.close();
+        }, "BtnArea");
     });
 
 }

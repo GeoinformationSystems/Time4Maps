@@ -53,12 +53,16 @@ function buildCombo() {
         searchAttr: "name",
         onChange: function(value) { 
 	        for (var i = 0; i < layer_Array.length; i++) {   
-	            layer_Array[i].mergeNewParams({'time':value}); 
+	            layer_Array[i].getSOurce().updateParams({
+	            	"time":value
+	            });
 	        } 
 	    }
     }, "stateSelect");	
 	for (var i = 0; i < layer_Array.length; i++) {   
-        layer_Array[i].mergeNewParams({'time':timeData.steps[0]}); 
+        layer_Array[i].getSOurce().updateParams({
+	       	"time":timeData.steps[0]
+	    });
     }
 	}
 }

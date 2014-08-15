@@ -71,17 +71,17 @@ function buildCombo() {
             searchAttr: "name",
             onChange: function(value) {
                 for (var i = 0; i < layer_Array.length; i++) {
-                    layer_Array[i].mergeNewParams({
-                        'time': value
-                    });
+                    layer_Array[i].getSource().updateParams({
+                        "time": value
+                    });      
                 }
             }
         }, "stateSelect");
 
         //change time info in Openlayers layer params
         for (var i = 0; i < layer_Array.length; i++) {
-            layer_Array[i].mergeNewParams({
-                'time': timeData.steps[vis_layer_number][0]
+            layer_Array[i].getSource().updateParams({
+                "time": timeData.steps[vis_layer_number][0]
             });
         }
     }

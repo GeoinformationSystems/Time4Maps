@@ -67,7 +67,7 @@ function initializeMapping() {
             period_JSON = item;
         }
     }); 
-     
+
     map = new ol.Map({
         renderer: "canvas",
         target: "map",
