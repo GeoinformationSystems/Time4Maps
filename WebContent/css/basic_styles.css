@@ -103,14 +103,14 @@ div.content_description {
 
 /* ------------------- TIME DESCRIPTIONS ------------------- */
 
-div.content_time {
+div.content_time { 
   width:800px;
+  height:30px;
   clear:left;
-  padding-top:30px;
   z-index:1000000;
   position:absolute;
   left:100px;
-  top:640px;
+  top:680px;
 }
 
 label.right {
