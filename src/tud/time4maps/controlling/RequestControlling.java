@@ -134,17 +134,20 @@ public class RequestControlling {
 		url += "&height=" + height;
 		url += "&width=" + width;
 
-		if (version.equals("1.3.0")) url += "&crs=" + srs;
+		if (version.equals("1.3.0")) url += "&CRS=" + srs;
 		else url += "&srs=" + srs;
 		
 		if (!time.contains("x")) url += "&time=" + time;		
-		String url_html = url + "&info_format=text/html";
+		String url_html = url + "&info_format=text/html&FORMAT=text/html";
+		
+		System.out.println("FInfo " + url_html);
+		
 		
 		try { 
 			String full_response = capRequest.getResponseString(url_html);
 			response = evalRequestResponse.trimHTML(full_response);  
 		} catch (Exception e) {  
-			String url_xml = url + "&info_format=text/xml";
+			String url_xml = url + "&info_format=text/xml&FORMAT=text/xml";
 			try { 
 				Document doc = capRequest.doRequest(url_xml);		
 				response = evalRequestResponse.parseFeatureInfoResponse(doc); 

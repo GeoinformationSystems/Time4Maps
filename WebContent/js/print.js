@@ -20,17 +20,29 @@
  *
  * @author Hannes Tressel. Professorship of Geoinformation Systems
  */
+var ui = {
+    mapWidth: 0,
+    mapHeight: 0,
+    map2_: false,
+    legendWidth: 0,
+    legendHeight: 0
+}
+
+var service_JSON = null;
+var layer_JSON = null;
+var service_JSON2 = null;
+var layer_JSON2 = null;
+
 function openPrintPreview() {
-    require(["dojo/_base/window", "dojo/dom-construct", "dojox/gfx", "dojo/io-query", "dojo/dom-style", "dojo/dom", "dojo/query", "dojo/NodeList-traverse"], function(win, domConstruct, gfx, ioQuery, domStyle, dom, query) {
+    require(["dojox/gfx", "dojo/_base/window", "dojo/dom-construct", "dojo/io-query", "dojo/dom-style", "dojo/dom", "dojo/query", "dojo/NodeList-traverse"], function(gfx, win, domConstruct, ioQuery, domStyle, dom, query) {
         var pWindowSettings = "width=" + window.screen.width / 1.3 + ", height=" + window.screen.height / 1.3 + ", scrollbars=yes";
         var pWindow = window.open("", "", pWindowSettings);
         var windowWidth = window.screen.width / 1.3;
-        var map2_ = false;
         if (dom.byId("map2") != null) {
-            map2_ = true;
+            ui.map2_ = true;
         }
 
-        if (!map2_) {
+        if (!ui.map2_) {
             var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
             var featureInfo_label = query("label", dom.byId("featureInfo_frame").contentDocument.body)[0].innerHTML;
             var featureInfo_height = domStyle.get("featureInfo_frame", "height") + 10;
@@ -42,20 +54,19 @@ function openPrintPreview() {
             var featureInfo_height1 = domStyle.get("featureInfo_frame1", "height") + 10;
             var featureInfo_height2 = domStyle.get("featureInfo_frame2", "height") + 10;
 
-            query("#feature_label", dom.byId("featureInfo_frame1").contentDocument.body).forEach(function(node){
-            	featureInfo_label1 = query("div:first-of-type", node).forEach(function(node_){
+            query("#feature_label", dom.byId("featureInfo_frame1").contentDocument.body).forEach(function(node) {
+                featureInfo_label1 = query("div:first-of-type", node).forEach(function(node_) {
                     return node_.innerHTML;
                 })[0].innerHTML;
             });
-            
-            query("#feature_label", dom.byId("featureInfo_frame2").contentDocument.body).forEach(function(node){
-            	featureInfo_label2 = query("div:first-of-type", node).forEach(function(node_){
+
+            query("#feature_label", dom.byId("featureInfo_frame2").contentDocument.body).forEach(function(node) {
+                featureInfo_label2 = query("div:first-of-type", node).forEach(function(node_) {
                     return node_.innerHTML;
                 })[0].innerHTML;
             });
         }
 
-        var service_JSON = null;
         wmsDescription_Store.fetchItemByIdentity({
             identity: "serviceDescriptionParam",
             onItem: function(item, request) {
@@ -63,14 +74,36 @@ function openPrintPreview() {
             }
         });
 
-        /* catch legendImage before change context */
+        wmsDescription_Store.fetchItemByIdentity({
+            identity: "layerDescriptionParam",
+            onItem: function(item, request) {
+                layer_JSON = item;
+            }
+        });
+
+        if (ui.map2_) {
+            wmsDescription_Store2.fetchItemByIdentity({
+                identity: "serviceDescriptionParam",
+                onItem: function(item, request) {
+                    service_JSON2 = item;
+                }
+            });
+
+            wmsDescription_Store2.fetchItemByIdentity({
+                identity: "layerDescriptionParam",
+                onItem: function(item, request) {
+                    layer_JSON2 = item;
+                }
+            });
+        }
+
         var legendImage = {
             src: dom.byId("legend_frame").src,
             width: domStyle.get("legend_frame", "width"),
             height: domStyle.get("legend_frame", "height")
         };
 
-        if (map2_) {
+        if (ui.map2_) {
             var legendImage2 = {
                 src: dom.byId("legend_frame2").src,
                 width: domStyle.get("legend_frame2", "width"),
@@ -82,10 +115,9 @@ function openPrintPreview() {
             win.setContext(window, window.document);
         };
 
-        /*focus popup*/
         win.setContext(pWindow, pWindow.document);
         domStyle.set(win.body(), "width", "99%");
-        var bodyWidth = windowWidth*0.99;
+        var bodyWidth = windowWidth * 0.99;
 
         domConstruct.create("div", {
             id: "wrapper",
@@ -101,7 +133,7 @@ function openPrintPreview() {
         domConstruct.create("section", {
             id: "headings",
             style: {
-                "marginTop":" 10px"
+                "marginTop": " 10px"
             }
         }, "wrapper");
 
@@ -119,217 +151,61 @@ function openPrintPreview() {
                 fontFamiliy: "'Myriad Pro','Helvetica Neue',Helvetica,Arial,Sans-Serif",
                 textShadow: "0px 1px 1px silver"
             }
-        }, "headings");       
-
-        /* get Map Image */       
-        var mapImage = null;
-        var bbox = "";
-        var imageUrl = [];
-
-        var map1Width = wrapperWidth * 0.70;
-
-
-
-        map.getLayers().forEach(function(layer) {
-
-            if (layer instanceof ol.layer.Image && layer.getVisible()) {
-                bbox = "";
-                var extent = map.getView().getView2D().calculateExtent(map.getSize());
-                for (var i in extent) {
-                    bbox = bbox + extent[i].toString() + ",";
-                }
-                bbox = bbox.substring(0, bbox.length - 1);
-                
-                var resolution = map.getView().getResolution();
-                var pixelRatio = 1;
-                var projection = map.getView().getProjection();
-                mapImage = layer.getSource().getImage(extent, resolution, pixelRatio, projection);
-                imageUrl.push({
-                    url: mapImage.image_.src.substring(0, mapImage.image_.src.indexOf("BBOX")) + ioQuery.objectToQuery({
-                        BBOX: bbox
-                    }),
-                    width: mapImage.image_.width,
-                    height: mapImage.image_.height
-                });
-            }
-        });
-
-        if (map2_) {
-            var mapImage2 = null;
-            var bbox2 = "";
-            var imageUrl2 = [];
-
-            map2.getLayers().forEach(function(layer) {
-
-                if (layer instanceof ol.layer.Image && layer.getVisible()) {
-                    bbox2 = "";
-                    var extent2 = map2.getView().getView2D().calculateExtent(map2.getSize());
-                    for (var i in extent2) {
-                        bbox2 = bbox2 + extent2[i].toString() + ",";
-                    }
-                    bbox2 = bbox2.substring(0, bbox2.length - 1);
-
-                    var resolution2 = map2.getView().getResolution();
-                    var pixelRatio2 = 1;
-                    var projection2 = map2.getView().getProjection();
-                    mapImage2 = layer.getSource().getImage(extent2, resolution2, pixelRatio2, projection2);
-                    imageUrl2.push({
-                        url: mapImage2.image_.src.substring(0, mapImage2.image_.src.indexOf("BBOX")) + ioQuery.objectToQuery({
-                            BBOX: bbox2
-                        }),
-                        width: mapImage2.image_.width,
-                        height: mapImage2.image_.height
-                    });
-                }
-            });
-        }
+        }, "headings");
 
         domConstruct.create("section", {
             id: "MapAndLegend1",
             style: {
-                "marginTop":" 10px"
+                "marginTop": " 10px"
             }
         }, "wrapper");
 
         domConstruct.create("div", {
             id: "map1",
             style: {
-               "display":"inline-flex",
-               "width":"70%",
-               "height":"400px"
+                "display": "inline-flex",
+                "width": "70%",
+                "height": "400px"
             }
         }, "MapAndLegend1");
-
-        var map1Width = wrapperWidth * 0.70;
 
         domConstruct.create("div", {
             id: "legend1",
             style: {
-               "display":" inline-block",
-               "width":"20%",
-               "height":"400px",
-               "marginLeft":"10px"
+                "display": " inline-block",
+                "width": "20%",
+                "height": "400px",
+                "marginLeft": "10px"
             }
         }, "MapAndLegend1");
-        var legend1Width = wrapperWidth * 0.20;
 
-        /*create & display map and overlay image */
-        var mapSurface = gfx.createSurface("map1", map1Width, 400);
-        for (var i in imageUrl) {
-            mapSurface.createImage({
-                x: 0,
-                y: 0,
-                width: 650,//(map1Width / imageUrl[i].width) * imageUrl[i].width,
-                height: (400 / imageUrl[i].height) * imageUrl[i].height,
-                src: imageUrl[i].url
-            });
-        }
-        /* if overlays are available...*/        
-        map.getOverlays().forEach(function(overlay) {
-            mapSurface.createImage({
-                x: ((map1Width / map.getSize()[0]) * map.getPixelFromCoordinate(overlay.getProperties().position)[0]) - 21 / 2,
-                y: ((400 / map.getSize()[1]) * map.getPixelFromCoordinate(overlay.getProperties().position)[1]) - 25,
-                width: overlay.values_.element.width,
-                height: overlay.values_.element.height,
-                src: overlay.values_.element.src
-            });
-        });
+        if (ui.map2_) {
 
-        /* add legend image */       
-        var legendSurface = gfx.createSurface("legend1", legend1Width, 400);
-        if (legendImage.width > legend1Width) {
-            legendSurface.createImage({
-                x: 0,
-                y: 0,
-                width: (legend1Width / legendImage.width) * legendImage.width + "px",
-                height: legendImage.height + "px",
-                src: legendImage.src
-            });
-
-        } else {
-            legendSurface.createImage({
-                x: 0,
-                y: 0,
-                width: legendImage.width + "px",
-                height: legendImage.height + "px",
-                src: legendImage.src
-            });
-        }
-
-        if (map2_) {
-            
             domConstruct.create("section", {
-            id: "MapAndLegend2",
+                id: "MapAndLegend2",
                 style: {
-                    "marginTop":" 1px"
+                    "marginTop": " 1px"
                 }
             }, "wrapper");
 
             domConstruct.create("div", {
                 id: "map2",
                 style: {
-                   "display":"inline-flex",
-                   "width":"70%",
-                   "height":"400px"
+                    "display": "inline-flex",
+                    "width": "70%",
+                    "height": "400px"
                 }
             }, "MapAndLegend2");
-            var map2Width = wrapperWidth * 0.70;
 
             domConstruct.create("div", {
                 id: "legend2",
                 style: {
-                   "display":" inline-block",
-                   "width":"20%",
-                   "height":"400px",
-                   "marginLeft":"10px"
+                    "display": " inline-block",
+                    "width": "20%",
+                    "height": "400px",
+                    "marginLeft": "10px"
                 }
             }, "MapAndLegend2");
-            var legend2Width = wrapperWidth * 0.20;
-
-            /*create & display map and overlay image */
-            var mapSurface2 = gfx.createSurface("map2", map2Width, 400);
-            for (var i in imageUrl2) {
-                mapSurface2.createImage({
-                    x: 0,
-                    y: 0,
-                    width: (map2Width / imageUrl2[i].width) * imageUrl2[i].width,
-                    height: (400 / imageUrl2[i].height) * imageUrl2[i].height,
-                    src: imageUrl2[i].url
-                });
-            }
-            /* if overlays are available...*/           
-            map2.getOverlays().forEach(function(overlay2) {
-                mapSurface2.createImage({
-                    x: ((map2Width / map2.getSize()[0]) * map2.getPixelFromCoordinate(overlay2.getProperties().position)[0]) - 21 / 2,
-                    y: ((400 / map2.getSize()[1]) * map2.getPixelFromCoordinate(overlay2.getProperties().position)[1]) - 25,
-
-                    width: overlay2.values_.element.width,
-                    height: overlay2.values_.element.height,
-                    src: overlay2.values_.element.src
-                });
-            });
-
-            /* add legend image */
-            
-            var legendSurface2 = gfx.createSurface("legend2", legend2Width, 400);
-            if (legendImage2.width > legend2Width) {
-                legendSurface2.createImage({
-                    x: 0,
-                    y: 0,
-                    width: (legend2Width / legendImage2.width) * legendImage2.width + "px",
-                    height: legendImage2.height + "px",
-                    src: legendImage2.src
-                });
-
-            } else {
-                legendSurface2.createImage({
-                    x: 0,
-                    y: 0,
-                    width: legendImage2.width + "px",
-                    height: legendImage2.height + "px",
-                    src: legendImage2.src
-                });
-            }
         }
 
         domConstruct.create("section", {
@@ -339,7 +215,7 @@ function openPrintPreview() {
             }
         }, "wrapper");
 
-        if (!map2_) {
+        if (!ui.map2_) {
             if (featureInfo_label != "Click on the map to get feature information.") {
                 domConstruct.create("h3", {
                     id: "featureInfoLabel",
@@ -348,7 +224,7 @@ function openPrintPreview() {
 
                     }
                 }, "featureInfo");
- 
+
                 domConstruct.create("article", {
                     id: "fi1",
                     innerHTML: featureInfo,
@@ -360,7 +236,7 @@ function openPrintPreview() {
             }
         } else {
             if (featureInfo_label1 != "Click on the map to get feature information." && featureInfo_label2 != "Click on the map to get feature information.") {
-                
+
                 domConstruct.create("h3", {
                     id: "featureInfoLabel",
                     innerHTML: "Feature Information",
@@ -400,7 +276,7 @@ function openPrintPreview() {
         domConstruct.create("input", {
             type: "button",
             value: "Print",
-            style:{
+            style: {
                 width: "100px",
                 height: "25px",
                 "marginLeft": "30px"
@@ -413,7 +289,7 @@ function openPrintPreview() {
         domConstruct.create("input", {
             type: "button",
             value: "Cancel",
-            style:{
+            style: {
                 width: "100px",
                 height: "25px",
                 "marginLeft": "30px"
@@ -422,6 +298,323 @@ function openPrintPreview() {
                 pWindow.close();
             }
         }, "BtnArea");
+
+
+        ui.mapWidth = wrapperWidth * 0.70;
+        ui.mapHeight = 400;
+        ui.legendWidth = wrapperWidth * 0.20;
+        ui.legendHeight = 400;
+
+        var layers = "";
+        var time = null;
+        map.getLayers().forEach(function(layer) {
+            if (layer instanceof ol.layer.Image && layer.getVisible()) {
+                layers += layer.getSource().getParams().LAYERS + ",";
+                (layer.getSource().getParams().time != undefined)?(time=layer.getSource().getParams().time):(time="x");
+            }
+        });
+        //entferne ','
+        layers = layers.slice(0, layers.length - 1);
+
+        if (layers.length > 0) {
+            mapSurface = gfx.createSurface("map1", ui.mapWidth, ui.mapHeight);
+            mapSurface.createImage({
+                x: 0,
+                y: 0,
+                width: ui.mapWidth + "px",
+                height: ui.mapHeight + "px",
+                src: getMapImage({
+                    url: service_JSON.url[0],
+                    version: service_JSON.version[0],
+                    srs: service_JSON.srs[0],
+                    format: service_JSON.format[0],
+                    layers: layers,
+                    time: time
+                }, map)
+            });
+        }
+
+        if (ui.map2_) {
+            var layers2 = "";
+            time = null;
+            map2.getLayers().forEach(function(layer) {
+                if (layer instanceof ol.layer.Image && layer.getVisible()) {
+                    layers2 += layer.getSource().getParams().LAYERS + ",";
+                    (layer.getSource().getParams().time != undefined)?(time=layer.getSource().getParams().time):(time="x");
+                }
+            });
+            layers2 = layers2.slice(0, layers2.length - 1);
+
+            if (layers2.length > 0) {
+                mapSurface2 = gfx.createSurface("map2", ui.mapWidth, ui.mapHeight);
+                mapSurface2.createImage({
+                    x: 0,
+                    y: 0,
+                    width: ui.mapWidth + "px",
+                    height: ui.mapHeight + "px",
+                    src: getMapImage({
+                        url: service_JSON2.url[0],
+                        version: service_JSON2.version[0],
+                        srs: service_JSON2.srs[0],
+                        format: service_JSON2.format[0],
+                        layers: layers2,
+                        time: time
+                    }, map2)
+                });
+            }
+
+        }
+
+        layers = "";
+        for (var i = map.getLayers().array_.length - 1; i > 0; i--) {
+            var layer = map.getLayers().array_[i];
+            if (layer.getVisible()) {
+                layers = layer.getSource().getParams().LAYERS;
+                break;
+            }
+        }
+
+        if (layers.length > 0) {
+            var legendSurface = gfx.createSurface("legend1", ui.legendWidth, ui.legendHeight);
+            var img = new Image();
+            img.src = getLegendImage({
+                url: service_JSON.url[0],
+                version: service_JSON.version[0],
+                format: service_JSON.format[0],
+                layers: layers
+            });
+            img.onload = function() {
+                legendSurface.createImage({
+                    x: 0,
+                    y: 0,
+                    width: (this.width < ui.legendWidth) ? (this.width) : (this.width / (this.width / ui.legendWidth)),
+                    height: (this.height < ui.legendHeight) ? (this.height) : (this.height / (this.height / ui.legendHeight)),
+                    src: this.src
+                });
+            }
+        }
+
+        if (ui.map2_) {
+            layers2 = "";
+            for (var i = map2.getLayers().array_.length - 1; i > 0; i--) {
+                var layer = map2.getLayers().array_[i];
+                if (layer.getVisible()) {
+                    layers2 = layer.getSource().getParams().LAYERS;
+                    break;
+                }
+            }
+
+            if (layers2.length > 0) {
+                var legendSurface2 = gfx.createSurface("legend2", ui.legendWidth, ui.legendHeight);
+                var img2 = new Image();
+                img2.src = getLegendImage({
+                    url: service_JSON2.url[0],
+                    version: service_JSON2.version[0],
+                    format: service_JSON2.format[0],
+                    layers: layers2
+                });
+
+                img2.onload = function() {
+                    legendSurface2.createImage({
+                        x: 0,
+                        y: 0,
+                        width: (this.width < ui.legendWidth) ? (this.width) : (this.width / (this.width / ui.legendWidth)),
+                        height: (this.height < ui.legendHeight) ? (this.height) : (this.height / (this.height / ui.legendHeight)),
+                        src: this.src
+                    });
+                }
+            }
+        }
+
+        var pos = null;
+        var markerImg = null;
+        map.getOverlays().forEach(function(marker) {
+            pos = getMarkerPosition(map);
+            markerImg = marker.values_.element.src
+            mapSurface.createImage({
+                x: pos.x,
+                y: pos.y,
+                width: 16,
+                height: 16,
+                src: markerImg
+            });
+        });
+
+        if (ui.map2_) {
+            var pos2 = null;
+            var markerImg2 = null;
+            map2.getOverlays().forEach(function(marker) {
+                pos2 = getMarkerPosition(map2);
+                markerImg2 = marker.values_.element.src
+                mapSurface2.createImage({
+                    x: pos.x,
+                    y: pos.y,
+                    width: 16,
+                    height: 16,
+                    src: markerImg2
+                });
+            });
+        }
+    });
+}
+
+function getMarkerPosition(map) {
+    var x = 0;
+    var y = 0;
+    var mapCenter = map.getView().getCenter();
+    map.getOverlays().forEach(function(marker) {
+        map.getView().setCenter(marker.getPosition());
+        /* 
+            berechneter Extent der Karte anhand der Ausdehnung des Div Elementes in dem
+            diese Platziert wird
+        */
+        var extent = map.getView().calculateExtent([ui.mapWidth, ui.mapHeight]);
+        /*
+            Marker X und Y Koordinate (EPSG:4326) auf der Karte
+        */
+        var markerX = marker.getPosition()[0];
+        var markerY = marker.getPosition()[1];
+        /*
+            crsWidth entspricht Breite des Intervalls extent[0] - extent[2]
+            crsHeight entspricht Höhe des Intervalls extent[1] - extent[3]
+        */
+        var crsWidth = null;
+        var crsHeight = null;
+        /*
+            imgX entspricht der Marker x Position auf dem Druckbild in Pixelkoordinaten
+            imgY entspricht der Marker y Position auf dem Druckbild in Pixelkoordinaten
+        */
+        var imgX = null;
+        var imgY = null;
+
+        /*
+            Berechnungen der Intervalle -> Kartenbreite und Kartenhöhe in Pixel anhand gegebenen Extents
+        */
+        if (extent[0] > 0 && extent[2] > 0) {
+            (extent[0] > extent[2]) ? (crsWidth = extent[0] - extent[2]) : (crsWidth = extent[2] - extent[0]);
+        } else if (extent[0] < 0 && extent[2] < 0) {
+            (extent[0] > extent[2]) ? (crsWidth = Math.abs(extent[2] - extent[0])) : (crsWidth = Math.abs(extent[0] - extent[2]));
+        } else {
+            crsWidth = Math.abs(extent[0]) + Math.abs(extent[2]);
+        }
+
+        if (extent[1] > 0 && extent[3] > 0) {
+            (extent[1] > extent[3]) ? (crsHeight = extent[1] - extent[3]) : (crsHeight = extent[3] - extent[1]);
+        } else if (extent[1] < 0 && extent[3] < 0) {
+            (extent[1] > extent[3]) ? (crsHeight = Math.abs(extent[3] - extent[1])) : (crsHeight = Math.abs(extent[1] - extent[3]));
+        } else {
+            crsHeight = Math.abs(extent[1]) + Math.abs(extent[3]);
+        }
+
+
+        /*
+            Berechnung der Koordinaten des Markers im Druckbild in EPSG:4326 Koordinaten
+        */
+        if (markerY > 0) {
+            imgY = Math.abs(extent[3]) - markerY;
+            y = (ui.mapHeight * imgY) / (crsHeight);
+            y = y - 16; //offset
+        } else {
+            (extent[1] < 0) ? (imgY = markerY - extent[1]) : (imgY = Math.abs(extent[3]) + Math.abs(extent[1])) - (Math.abs(extent[1]) - Math.abs(markerY));
+            y = (ui.mapHeight * imgY) / (crsHeight);
+            y = y - 16; //offset
+        }
+
+        if (markerX > 0) {
+            (extent[0] < 0) ? (imgX = Math.abs(extent[0]) + markerX) : (imgX = markerX - extent[0]);
+            x = (ui.mapWidth * imgX) / (crsWidth);
+            x = x - 8; //offset
+        } else {
+            imgX = Math.abs(extent[0]) - Math.abs(markerX);
+            x = (ui.mapWidth * imgX) / (crsWidth);
+            x = x - 8; //offset
+        }
     });
 
+    map.getView().setCenter(mapCenter);
+
+    var data = {
+        x: x,
+        y: y
+    };
+
+    return data;
+}
+
+function getMapImage(data, map) {
+    //holt Koordinate des aktuellen Kartenzentrums
+    var mapCenter = map.getView().getCenter();
+    map.getOverlays().forEach(function(marker) {
+        /*
+            Marker Position wird zum neuen Mapzentrum,
+            -> Marker in Druckkarte ist dann immer zentral angeordnet
+        */
+        map.getView().setCenter(marker.getPosition());
+    });
+    /* 
+        Berechnet extent für die Druckkarte anhand der Größe des 
+        Div Elements, in dem es platziert werden soll
+    */
+    var extent = map.getView().calculateExtent([ui.mapWidth, ui.mapHeight]);
+    /*
+        setze ursprüngliches Kartenzentrum
+    */
+    map.getView().setCenter(mapCenter);
+
+    /*
+        width: Koordninatenintervall (extent[0] - extent[2]) entspricht Kartenbreite in Pixel
+        height: Koordinatenintervall (extent[1] - extent[3]) entspricht Kartenhöhe in Pixel
+        bbox: extent
+    */
+    var styles = {
+        width: Math.abs(extent[0]) + Math.abs(extent[2]),
+        height: Math.abs(extent[1]) + Math.abs(extent[3]),
+        bbox: extent[0] + "," + extent[1] + "," + extent[2] + "," + extent[3]
+    };
+
+    /*
+        Koeffizienten (Faktoren) für eine verzerrungsfreie Transformation
+    */
+    var faktor = {
+        x: styles.width / ui.mapWidth,
+        y: styles.height / ui.mapHeight
+    }
+
+    /*
+        Einzelteile des GetMap Requests
+    */
+    var imgURL = {
+        url: (data.url[data.url.length - 1 === "?"]) ? (data.url) : (data.url += "?"),
+        service: "SERVICE=WMS",
+        version: "&VERSION=" + data.version,
+        request: "&REQUEST=GetMap",
+        format: "&FORMAT=" + data.format,
+        transparent: "&TRANSPARENT=true",
+        layers: "&LAYERS=" + data.layers,
+        time: (data.time != "x")?("&TIME="+data.time):(""),
+        srs: (data.version === "1.1.1") ? ("&SRS=" + data.srs) : ((data.srs === "EPSG:4326") ? ("&CRS=CRS:84") : ("&CRS=" + data.srs)),
+        styles: "&STYLES=&WIDTH=" + Math.floor(styles.width / faktor.x) + "&HEIGHT=" + Math.floor(styles.height / faktor.y) + "&BBOX=" + styles.bbox
+    }
+
+    return (imgURL.url + imgURL.service + imgURL.version + imgURL.request + imgURL.format + imgURL.transparent + imgURL.layers + imgURL.time + imgURL.srs + imgURL.styles);
+}
+
+function getLegendImage(data) {
+    /* jedes Symbol hat bekommt Breite und Höhe von 20 Pixeln zugeordnet */
+    var styles = {
+        width: 20,
+        height: 20
+    }
+
+    /* Einzelteile des GetLegendGraphics Requests */
+    var imgURL = {
+        url: (data.url[data.url.length - 1 === "?"]) ? (data.url) : (data.url += "?"),
+        request: "REQUEST=GetLegendGraphic",
+        version: "&VERSION=" + data.version,
+        format: "&FORMAT=" + data.format,
+        styles: "&WIDTH=" + styles.width + "&HEIGHT=" + styles.height,
+        layers: "&LAYER=" + data.layers
+    }
+
+    return (imgURL.url + imgURL.request + imgURL.version + imgURL.format + imgURL.styles + imgURL.layers);
 }

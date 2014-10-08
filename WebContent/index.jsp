@@ -119,13 +119,13 @@
         </div>  	
         <div id="map" class="map" style="left:10px;top:60px;"></div>
         <!--img id="legend_frame" style="top:60px;left:860px;"/-->        
-        <div id="time" class="content_time" style="left:10px;top:540px;">	
+        <div id="time" class="content_time" style="left:10px;top:580px;">	
             <label id="time_start_label">start time</label>
             <div style="float:left; padding-top:10px; padding-left:70px;z-index:120 !important;">
                 <label style="padding-top:10px;">current time step: </label>
                 <input id="stateSelect" style="visibility:hidden;float: left;padding-left: 70px;padding-top: 10px;z-index: 120 !important;">
                 <input id="fromDate_Input"/>
-                <label id="time_period_label" style="padding-top:20px;">period: </label>
+                <label id="time_period_label" style="padding-top:20px;">period: not defined</label>
             </div>
             <label id="time_end_label" class="right" style="padding-top:10px;">end time</label>            
             <div id="play">

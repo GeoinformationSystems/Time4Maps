@@ -44,6 +44,9 @@ public class EvaluatingRequestResponse {
 	private static String xpServiceAbstract = "//Service/Abstract/text()";
 	 
 	private static String xpServiceFormat = "//Capability/Request/GetMap/Format/text()";
+	private static String xpServiceMapURL = "//Capability/Request/GetMap/DCPType/HTTP/Get/OnlineResource/@href";
+	private static String xpServiceFInfoURL = "//Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource/@href";
+	
 	private static String xpServiceCRS = "//Capability/Layer/CRS/text()";
 	private static String xpServiceSRS = "//Capability/Layer/SRS/text()";
 	
@@ -99,8 +102,16 @@ public class EvaluatingRequestResponse {
 
 		String serviceFormat = (String) exp.getXPathResult(xpServiceFormat, new String(), nl); 		
 		
+		String serviceMapURL = (String) exp.getXPathResult(xpServiceMapURL, new String(), nl); 
+		String serviceFInfoURL = (String) exp.getXPathResult(xpServiceFInfoURL, new String(), nl); 
+
+		if (serviceMapURL.equals("")) serviceMapURL = capParams.getUrl();
+		serviceMapURL = serviceMapURL.substring(0, serviceMapURL.indexOf("?"));
+		if (serviceFInfoURL.equals("")) serviceFInfoURL = capParams.getUrl();
+		serviceFInfoURL = serviceFInfoURL.substring(0, serviceFInfoURL.indexOf("?"));
+		
 		NodeList serviceFormats = (NodeList) exp.getXPathResult(xpServiceFormat, new NodeSet(), nl);
-		for (int i =0; i < serviceFormats.getLength(); i++) {
+		for (int i = 0; i < serviceFormats.getLength(); i++) {
 			if (serviceFormats.item(i).getTextContent().equals("image/png")) {
 				serviceFormat = serviceFormats.item(i).getTextContent(); 
 			}
@@ -126,6 +137,8 @@ public class EvaluatingRequestResponse {
 		
 		service.put("version",capParams.getVersion());
 		service.put("url", capParams.getUrl());
+		service.put("map", serviceMapURL);
+		service.put("finfo", serviceFInfoURL);
 		
 		return service;
 	}

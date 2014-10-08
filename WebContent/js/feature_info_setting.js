@@ -41,16 +41,17 @@ function bindFeatureControls(time_info) {
             service_JSON = item;
         }
     });
-    service_url = wmsDescription_Store.getValue(service_JSON, "url");
+    service_url = wmsDescription_Store.getValue(service_JSON, "finfo");
     service_version = wmsDescription_Store.getValue(service_JSON, "version");
     service_srs = wmsDescription_Store.getValue(service_JSON, "srs");
 
     map.on("singleclick", function(evt) {
-        last_event = evt.coordinate;
-        map.getLayers().forEach(function(layer) {
-            if (layer.getProperties().title === layer_Array[vis_layer_number].getProperties().title) {
+        for (var i = map.getLayers().array_.length - 1; i > 0; i--) {
+            var layer = map.getLayers().array_[i];
+            if (layer.getVisible()) {
+                last_event = evt.coordinate;
                 var resolution = map.getView().getResolution();
-                var projection = map.getView().getProjection(); 
+                var projection = map.getView().getProjection();
                 var source = layer.getSource().getGetFeatureInfoUrl(evt.coordinate, resolution, projection, {
                     "INFO_FORMAT": "text/html",
                 });
@@ -59,30 +60,10 @@ function bindFeatureControls(time_info) {
                     require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                         var sourceObject = ioQuery.queryToObject(source);
                         if (time_info === "time") {
-                            var url = "featureInfo_compare.jsp?url=" 
-                                    + service_url + "&request=GetFeatureInfo&service=WMS" 
-                                    + "&version=" + sourceObject.VERSION 
-                                    + "&query_layers=" + sourceObject.QUERY_LAYERS 
-                                    + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) 
-                                    + "&bbox=" + sourceObject.BBOX 
-                                    + "&width=" + sourceObject.WIDTH 
-                                    + "&height=" + sourceObject.HEIGHT 
-                                    + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) 
-                                    + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J)
-                                    + "&time=" + sourceObject.time;   
+                            var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J) + "&time=" + sourceObject.time;
                             domAttr.set("featureInfo_frame", "src", url);
                         } else {
-                            var url = "featureInfo_compare.jsp?url=" 
-                                    + service_url + "&request=GetFeatureInfo&service=WMS" 
-                                    + "&version=" + sourceObject.VERSION 
-                                    + "&query_layers=" + sourceObject.QUERY_LAYERS 
-                                    + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) 
-                                    + "&bbox=" + sourceObject.BBOX 
-                                    + "&width=" + sourceObject.WIDTH 
-                                    + "&height=" + sourceObject.HEIGHT 
-                                    + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) 
-                                    + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J) 
-                                    + "&time=x";
+                            var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J) + "&time=x";
                             domAttr.set("featureInfo_frame", "src", url);
                         }
                     });
@@ -114,7 +95,8 @@ function bindFeatureControls(time_info) {
                 });
 
                 map.addOverlay(overlay);
+                break;
             }
-        });
+        }
     });
 }

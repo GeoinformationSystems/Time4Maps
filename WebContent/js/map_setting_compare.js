@@ -20,7 +20,7 @@
  * The general params, such as wms name, layer name ... will be added to the gui element.
  * Time information is checked and appropriate methods to generate time slider or time combobox are called.
  *
- * @author Christin Henzen, Daniel Kadner. Professorship of Geoinformation Systems
+ * @author Christin Henzen, Daniel Kadner, Hannes Tressel. Professorship of Geoinformation Systems
  */
 
 var map, wms_layer;
@@ -107,7 +107,7 @@ function setMapValues() {
                 wms_layer2 = new ol.layer.Image({
                     title: layer_JSON2.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON2.url,
+                        url: service_JSON2.map, //service_JSON2.url,
                         params: {
                             "LAYERS": layer_JSON2.name[i],
                             "FORMAT": "image/png",
@@ -125,7 +125,7 @@ function setMapValues() {
                 wms_layer2 = new ol.layer.Image({
                     title: layer_JSON2.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON2.url,
+                        url: service_JSON2.map, //service_JSON2.url,
                         params: {
                             "LAYERS": layer_JSON2.name[i],
                             "FORMAT": service_JSON2.format[0],
@@ -143,7 +143,7 @@ function setMapValues() {
                 wms_layer2 = new ol.layer.Image({
                     title: layer_JSON2.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON2.url,
+                        url: service_JSON2.map, //service_JSON2.url,
                         params: {
                             "LAYERS": layer_JSON2.name[i],
                             "FORMAT": "image/png"
@@ -157,7 +157,7 @@ function setMapValues() {
                 wms_layer2 = new ol.layer.Image({
                     title: layer_JSON2.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON2.url,
+                        url: service_JSON2.map, //service_JSON2.url,
                         params: {
                             "LAYERS": layer_JSON2.name[i],
                             "FORMAT": "image/png"
@@ -168,126 +168,14 @@ function setMapValues() {
                 layer_Array2[i] = wms_layer2;
             }
         }
+        if (i < layer_Array2.length-1) wms_layer2.setVisible(false);
     }
 
     setLegendValues(0, 0);
     if (markers2 != null) {
         markers2 = null;
     }
-
-    /*
-    map2 = new OpenLayers.Map('map2');
-    //adding all given layers from wms
-    layer_Array2 = new Array(layer_JSON2.name.length);
-    for (var i = 0; i < layer_JSON2.name.length; i++) {
-        if (time_JSON2 != null && time_JSON2.def[0] != null && time_JSON2.start[0] != null) {
-            if (service_JSON2.format === "image/tiff" || service_JSON2.format == "image/tiff") {
-                wms_layer2 = new OpenLayers.Layer.WMS(layer_JSON2.title[i], service_JSON2.url, {
-                    layers: layer_JSON2.name[i],
-                    format: "image/png", //
-                    transparent: false,
-                    time: cutDate(time_JSON2.def[0])
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map2.addLayer(wms_layer2);
-                layer_Array2[i] = wms_layer2;
-            } else {
-                wms_layer2 = new OpenLayers.Layer.WMS(layer_JSON2.title[i], service_JSON2.url, {
-                    layers: layer_JSON2.name[i],
-                    format: service_JSON2.format, //"image/png", //
-                    transparent: false,
-                    time: cutDate(time_JSON2.def[0])
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map2.addLayer(wms_layer2);
-                layer_Array2[i] = wms_layer2;
-            }
-        } else {
-            if (service_JSON2.format === "image/tiff") {
-                wms_layer2 = new OpenLayers.Layer.WMS(layer_JSON2.title[i], service_JSON2.url, {
-                    layers: layer_JSON2.name[i],
-                    format: "image/png",
-                    transparent: false
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map2.addLayer(wms_layer2);
-                layer_Array2[i] = wms_layer2;
-            } else {
-                wms_layer2 = new OpenLayers.Layer.WMS(layer_JSON2.title[i], service_JSON2.url, {
-                    layers: layer_JSON2.name[i],
-                    format: service_JSON2.format, //"image/png", //
-                    transparent: false
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map2.addLayer(wms_layer2);
-                layer_Array2[i] = wms_layer2;
-            }
-        }
-    }
-    setLegendValues(0, 0);
-    map2.zoomToMaxExtent();
-    map2.zoomIn();
-    //adapt style of layer switcher (remove blue lines)
-    var OLSwitcher2 = new OpenLayers.Control.LayerSwitcher(true, "transparent", true);
-    OLSwitcher2.roundedCornerColor = "transparent";
-    if (layer_Array2.length >= 2) {
-        map2.addControl(OLSwitcher2);
-        OLSwitcher2.maximizeControl();
-    }
-
-    //remove new pan/zoom-control - cause it has no world-button
-    var controls = map2.getControlsByClass("OpenLayers.Control.Zoom");
-    map2.removeControl(controls[0]);
-
-    //add old pan/zoom-control
-    var panZoomBar = new OpenLayers.Control.PanZoomBar();
-    panZoomBar.zoomWorldIcon = true;
-    map2.addControl(panZoomBar);
-
-    map2.addControl(new OpenLayers.Control.MousePosition());
-
-    map2.events.register('changelayer', null, function(evt) {
-        if (evt.property === "visibility") {
-            for (var i = 0; i < layer_Array2.length; i++) {
-                if (layer_Array2[i].params.LAYERS === evt.layer.params["LAYERS"]) {
-                    setLegendValues(i, 2);
-                    vis_layer_number2 = i;
-                    if (markers2 != null) markers2.destroy();
-                    dojo.byId("featureInfo_frame").src = "featureInfo.jsp";
-                }
-            }
-        }
-    });
-*/
-
+ 
     var service_JSON = null;
     var layer_JSON = null;
     var time_JSON = null;
@@ -310,120 +198,7 @@ function setMapValues() {
             time_JSON = item;
         }
     });
-    /*
-    map = new OpenLayers.Map('map');
-    //adding all given layers from wms
-    layer_Array = new Array(layer_JSON.name.length);
-    for (var i = 0; i < layer_JSON.name.length; i++) {
-        if (time_JSON != null && time_JSON.def[0] != null && time_JSON.start[0] != null) {
-            if (service_JSON.format === "image/tiff" || service_JSON.format == "image/tiff") {
-                wms_layer = new OpenLayers.Layer.WMS(layer_JSON.title[i], service_JSON.url, {
-                    layers: layer_JSON.name[i],
-                    format: "image/png", //
-                    transparent: false,
-                    time: cutDate(time_JSON.def[0])
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map.addLayer(wms_layer);
-                layer_Array[i] = wms_layer;
-            } else {
-                wms_layer = new OpenLayers.Layer.WMS(layer_JSON.title[i], service_JSON.url, {
-                    layers: layer_JSON.name[i],
-                    format: service_JSON.format, //"image/png", //
-                    transparent: false,
-                    time: cutDate(time_JSON.def[0])
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map.addLayer(wms_layer);
-                layer_Array[i] = wms_layer;
-            }
-        } else {
-            if (service_JSON.format === "image/tiff") {
-                wms_layer = new OpenLayers.Layer.WMS(layer_JSON.title[i], service_JSON.url, {
-                    layers: layer_JSON.name[i],
-                    format: "image/png", //
-                    transparent: false
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map.addLayer(wms_layer);
-                layer_Array[i] = wms_layer;
-
-            } else {
-                wms_layer = new OpenLayers.Layer.WMS(layer_JSON.title[i], service_JSON.url, {
-                    layers: layer_JSON.name[i],
-                    format: service_JSON.format, //"image/png", //
-                    transparent: false
-                }, {
-                    isBaseLayer: true,
-                    visibility: true,
-                    projection: "EPSG:4326",
-                    'reproject': true,
-                    singleTile: true,
-                    ratio: 1,
-                    transitionEffect: 'resize'
-                });
-                map.addLayer(wms_layer);
-                layer_Array[i] = wms_layer;
-            }
-        }
-    }
-    setLegendValues(0, 0);
-    map.zoomToMaxExtent();
-    map.zoomIn();
-
-    //remove new pan/zoom-control - cause it has no world-button
-    var controls = map.getControlsByClass("OpenLayers.Control.Zoom");
-    map.removeControl(controls[0]);
-
-    //add old pan/zoom-control
-    var panZoomBar = new OpenLayers.Control.PanZoomBar();
-    panZoomBar.zoomWorldIcon = true;
-    map.addControl(panZoomBar);
-
-    //adapt style of layer switcher (remove blue lines)
-    var OLSwitcher = new OpenLayers.Control.LayerSwitcher(true, "transparent", true);
-    OLSwitcher.roundedCornerColor = "transparent";
-    if (layer_Array.length >= 2) {
-        map.addControl(OLSwitcher);
-        OLSwitcher.maximizeControl();
-    }
-    map.addControl(new OpenLayers.Control.MousePosition());
-    map.events.register('changelayer', null, function(evt) {
-        if (evt.property === "visibility") {
-            for (var i = 0; i < layer_Array.length; i++) {
-                if (layer_Array[i].params.LAYERS === evt.layer.params["LAYERS"]) {
-                    setLegendValues(i, 1);
-                    vis_layer_number = i;
-                    if (markers != null) markers.destroy();
-                    dojo.byId("featureInfo_frame").src = "featureInfo.jsp";
-                }
-            }
-        }
-    });
-    var event_by_map1 = false;
-    var event_by_map2 = false;
-    */
+  
     map = new ol.Map({
         renderer: "canvas",
         target: "map",
@@ -462,7 +237,7 @@ function setMapValues() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": "image/png",
@@ -480,7 +255,7 @@ function setMapValues() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": service_JSON.format[0],
@@ -498,7 +273,7 @@ function setMapValues() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": "image/png"
@@ -512,7 +287,7 @@ function setMapValues() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": "image/png"
@@ -523,6 +298,7 @@ function setMapValues() {
                 layer_Array[i] = wms_layer;
             }
         }
+        if (i < layer_Array.length-1) wms_layer.setVisible(false);
     }
 
     if (markers != null) {
@@ -540,67 +316,12 @@ function setMapValues() {
 
     map.getView().on("change:center", function() {
         map2.setView(map.getView());
-    })
+    });
 
     map2.getView().on("change:center", function() {
         map.setView(map2.getView());
-    })
-
-
-
-    /*
-    map.events.register('moveend', null, function(evt) {
-        if (event_by_map2) {
-            event_by_map2 = false;
-        } else {
-            event_by_map1 = true;
-            map2.setCenter(map.getCenter(), map.getZoom());
-        }
     });
-    map.events.register('movestart', null, function(evt) {
-        if (event_by_map2) {
-            //event_by_map2 = false;
-        } else {
-            event_by_map1 = true;
-            map2.setCenter(map.getCenter(), map.getZoom());
-        }
-    });
-    map.events.register('move', null, function(evt) {
-        if (event_by_map2) {
-            //event_by_map2 = false;
-        } else {
-            event_by_map1 = true;
-            map2.setCenter(map.getCenter(), map.getZoom());
-        }
-    });
-
-    map2.events.register('moveend', null, function(evt) {
-        if (event_by_map1) {
-            event_by_map1 = false;
-        } else {
-            event_by_map2 = true;
-            map.setCenter(map2.getCenter(), map2.getZoom());
-        }
-    });
-
-    map2.events.register('movestart', null, function(evt) {
-        if (event_by_map1) {
-            //event_by_map1 = false;
-        } else {
-            event_by_map2 = true;
-            map.setCenter(map2.getCenter(), map2.getZoom());
-        }
-    });
-
-    map2.events.register('move', null, function(evt) {
-        if (event_by_map1) {
-            //event_by_map1 = false;
-        } else {
-            event_by_map2 = true;
-            map.setCenter(map2.getCenter(), map2.getZoom());
-        }
-    });
-*/
+ 
 }
 
 var leg_1 = false;

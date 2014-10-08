@@ -1,3 +1,8 @@
+html,body{
+	width: 100%;
+  	height: 100%;
+  	margin:0; 
+}
 
 body { 
   	background-color:#DCEBF0; 
@@ -5,8 +10,8 @@ body {
 	font-family:sans-serif; 
   	font-size:small; 
   	font-weight:normal; 
-  	margin:0; 
-  	padding:0;  
+  	padding:0; 
+  	min-height: 600px;
 }
 
 #feature_label {
@@ -58,17 +63,48 @@ div.map {
 }
 
 div.content_time {  
+  width:100%;
+  height: 100%;
   z-index:1000000; 
 }
 
 #time_start_label {
-  padding-right:10px;
-  float:left; 
+  padding-right:30px;
+  margin-top:4px;
+  min-width:80px;
+  float:left;
 }
 
 #time_end_label {
-  padding-left:10px;
+	min-width:80px;
+	padding-left:30px;
 }  
+
+#time_container{
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	display: table;
+	padding-top:15px;
+}
+#time_period_label{
+	margin-left: 10px;
+}
+
+#time_slider{
+	margin: 15px auto 0 auto;
+}
+
+#play{
+	display: inline;
+	margin-left:30px;
+}
+
+#printdiv{
+	width: 20%;
+	float: right;
+	margin-top: 10px;
+}
 
 /* setting buttons in same size */
 .dijitButtonText {

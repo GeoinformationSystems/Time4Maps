@@ -47,7 +47,7 @@
 		<script>dojoConfig = {parseOnLoad: true}</script>
 
 		<script src="js/dojo-release-1.9.0/dojo/dojo.js" type="text/javascript" data-dojo-config=""></script>
-		<link rel="stylesheet" type="text/css" href="js/dojo-release-1.9.0/dijit/themes/tundra/tundra.css" />
+		<link rel="stylesheet" type="text/css" href="js/dojo-release-1.9.0/dijit/themes/claro/claro.css" />
 		
 		<link rel="stylesheet" type="text/css" href="css/plain_styles.css" />
 		<link href="js/ol3/build/ol.css" type="text/css" rel="stylesheet"/>
@@ -56,7 +56,7 @@
 		<script src="js/initialize_scripts.js" type="text/javascript"></script>
 		<script src="js/map_setting.js" type="text/javascript"></script>
 		<script src="js/layer_gui_setting.js" type="text/javascript"></script>
-		<script src="js/feature_info_setting_dynamic.js" type="text/javascript"></script>
+		<script src="js/feature_info_setting.js" type="text/javascript"></script>
 		<script src="js/time_logic.js" type="text/javascript"></script>
 		<script src="js/time_gui_setting.js" type="text/javascript"></script>
 		<script src="js/time_combobox.js" type="text/javascript"></script>
@@ -109,22 +109,22 @@
 					initializeTimeGuiFilling();
 					buildToolTips();
 				}
-		        
-		        dijit.byId('time_slider').set("style","width:400px;float:left;");
-		        var child = dojo.byId(OpenLayers_Control_MinimizeDiv);
-		        dojo.byId(layerSwitcherCustom).removeChild(child);
+		        require(["dojo/dom-style"], function(domStyle){
+		        	domStyle.set("time_slider", "width", "80%");
+		        	domStyle.set("layerControlStatusBtn", "display", "none");
+		        });
 			}
  
 		</script>
 		
 		<!--[if IE]><style type="text/css"> .clear { zoom: 1; display: block; } </style> <![endif]-->
 	</head>
-<body class="tundra" style="background-color: #FFFFFF;" onload="init()">
+<body class="claro" style="background-color: #FFFFFF;" onload="init()">
 	<div dojoType="dojo.data.ItemFileReadStore" data="storeData"
 		jsId="wmsDescription_Store"></div>
 
 	<div id="border_all" data-dojo-type="dijit/layout/BorderContainer"
-		data-dojo-props='style:"width: 1000px; height: 670px;"'>
+		data-dojo-props='style:"width: 100%; height: 100%;"'>
 
 		<div id="border_left" data-dojo-type="dijit/layout/BorderContainer"
 			data-dojo-props='region: "center",style:"width: 800px; height: 470px;"'>
@@ -132,32 +132,50 @@
 			<div role="navigation" data-dojo-type="dijit/layout/ContentPane"
 				data-dojo-props='id:"border-left-top", region:"top", style:"height: 470px; width: 800px;",splitter:true,minSize:470'>
 				
-				<div id="map" class="map" style="height:660px; width:990px;float:left;"></div>
+				<div id="map" class="map" style="height:96%; width:98%;float:left;"></div>
 			</div>
 			
 			<div role="contentinfo" data-dojo-type="dijit/layout/ContentPane"
 				data-dojo-props='id:"border-left-bottom", region:"center", style:"width: 800px;height: 200px; ",splitter:true,minSize:150,maxSize:850'>
 
-				<div id="time" class="content_time" style="min-width:600px;">
+				<!--div id="time" class="content_time" style="min-width:600px;">
 					<label id="time_start_label">start time</label>
-					<div id="time_slider" style="float:left;z-index: -12 !important;width: 600px !important;"></div>
-						
-					<label id="time_end_label" style="float:left;">end time</label>
-					
-					<div id="play" style="clear:left;padding-top: 20px;"> 
-						<div style="z-index: 120 !important;padding-top:10px;">
-						<label style="padding-top: 40px;">current time step: </label> <input
-							id="stateSelect" style="visibility: hidden;z-index: 120 !important;">
+					<div style="z-index: 120 !important;">
+						<label style="padding-top: 40px;">current time step: </label> 
+						<input id="stateSelect" style="visibility: hidden;z-index: 120 !important;"/>
 						<input id="fromDate_Input" />
 						<label id="time_period_label" style="padding-top:20px;">period: </label>
 					</div>
+					<label id="time_end_label" style="float:left;">end time</label>
+					<div id="time_slider" style="float:left;z-index: -12 !important;width: 600px;"></div>
 						
+					
+					
+					<div id="play" style="clear:left;padding-top: 20px;"> 
 						<div id="playdiv" style="margin-left:-5px;padding-top:10px;">
 							<div id="play_div"></div>
 						</div>
 					</div>
+					<div id="printdiv" style="padding-top:10px;margin-left:-5px;">
+					<div id="print_div"></div>
+				</div-->
+				<div id="time" class="content_time">
+					<div id="time_container">
+						<label id="time_start_label">start time</label>
+						<label>current time step: </label> 
+						<input id="stateSelect" style="visibility: hidden;z-index: 120 !important;"/>
+						<input id="fromDate_Input" />
+						<label id="time_period_label">period: </label>
+						<div id="play">
+							<div id="play_div"></div>
+						</div>
+						<label id="time_end_label">end time</label>
+					</div>
+					<div id="time_slider" style="z-index: -12 !important;"></div>
+					<div id="printdiv">
+							<div id="print_div"></div>
+					</div>
 				</div>
-				<div id="printdiv" style="padding-top:10px;margin-left:-5px;"><div id="print_div"></div></div>
 			</div>
 		</div>
 

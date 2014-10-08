@@ -121,7 +121,7 @@
     <div id="legendimage2" style="position: absolute; top: 70px; left: 1200px; z-index: -5;height:280px;width:290px;overflow:auto;">
         <img id="legend_frame2">
     </div>
-    <div id="time" class="content_time" style="left:280px;top:580px; z-index: -5">
+    <div id="time" class="content_time" style="left:280px;top:600px; z-index: -5">
         <label id="time_start_label">start time</label>
         <div style="float:left; padding-top:10px; padding-left:70px;z-index:120 !important;">
             <label style="padding-top:10px;">current time step: </label>

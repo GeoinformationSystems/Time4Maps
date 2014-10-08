@@ -65,12 +65,36 @@
 			items: [ <%=jsonString%> ] 
 		};
 		function init() {
+			var checkedAll = false;
 			var load_button = new dijit.form.Button({
 		        label: "View in TIME4MAPS",
 		        onClick: function(){ 
 		            reload(); 
 		        }
 		    }, "load"); 
+
+		    new dijit.form.Button({
+		    	label: "Select All/None",
+		    	onClick: function(){
+					//select or deselect all checkboxes
+					var mapping_JSON = null;
+					require(["dojo/query", "dijit/registry"], function(query, registry){
+						wmsDescription_Store.fetchItemByIdentity({
+							identity: "layers",
+							onItem: function(item, request){
+								mapping_JSON = item;
+							}
+						});
+
+						for (var i=0; i<mapping_JSON.number[0]; i++){
+							(!checkedAll)? (registry.byId("layer_"+i).set("checked", true)):(registry.byId("layer_"+i).set("checked", false));
+						}
+						
+						(checkedAll) ? (checkedAll = false ) : (checkedAll = true);
+					});
+
+		    	}
+		    }, "btn_selectAll");
 		   	var mapping_JSON;
 		   	wmsDescription_Store = new dojo.data.ItemFileReadStore({data:storeData, identifier:"id"});
 		   	wmsDescription_Store.fetchItemByIdentity({ identity: "layers", onItem: function(item, request) { mapping_JSON = item; }});    
@@ -130,6 +154,7 @@
 			layers in Time4Maps</h2>
 		<div id="cb" style="padding-top: 30px;"></div>
 		<div id="load"></div>
+		<div id="btn_selectAll"></div>
 	</div>
 </body>
 </html>

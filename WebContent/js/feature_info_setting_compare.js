@@ -52,11 +52,11 @@ function bindFeatureControls(time_info) {
         }
     });
 
-    service_url = wmsDescription_Store.getValue(service_JSON, "url");
+    service_url = wmsDescription_Store.getValue(service_JSON, "finfo");
     service_version = wmsDescription_Store.getValue(service_JSON, "version");
     service_srs = wmsDescription_Store.getValue(service_JSON, "srs");
 
-    service_url2 = wmsDescription_Store2.getValue(service_JSON2, "url");
+    service_url2 = wmsDescription_Store2.getValue(service_JSON2, "finfo");
     service_version2 = wmsDescription_Store2.getValue(service_JSON2, "version");
     service_srs2 = wmsDescription_Store2.getValue(service_JSON2, "srs");
 

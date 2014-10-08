@@ -44,7 +44,7 @@ function bindFeatureControls(time_info) {
             service_JSON = item;
         }
     });
-    service_url = wmsDescription_Store.getValue(service_JSON, "url");
+    service_url = wmsDescription_Store.getValue(service_JSON, "finfo");
     service_version = wmsDescription_Store.getValue(service_JSON, "version");
     service_srs = wmsDescription_Store.getValue(service_JSON, "srs");
 

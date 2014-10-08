@@ -142,7 +142,7 @@
         <iframe style="border:none;width:465px;height:180px;float:left;" id="featureInfo_frame1" src="featureInfo_compare.jsp"></iframe>  
         <iframe style="border:none;width:465px;height:180px;float:right;" id="featureInfo_frame2" src="featureInfo_compare.jsp"></iframe>
     </div>
-    <div id="printdiv" style="position: absolute; top: 735px; left: 975px; z-index: 0;">
+    <div id="printdiv" style="position: absolute; top: 715px; left: 975px; z-index: 0;">
         <div id="print_div"></div>
     </div>
 </body></html>

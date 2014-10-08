@@ -83,7 +83,9 @@
 	                    
 	       	print_button = new dijit.form.Button({
 	           	label: "Print",
-	          	onClick: openPrintPreview     
+	          	onClick: function(){
+	          		openPrintPreview();
+	          	}
 	        	}, "print_div");
 	                  
 			wmsDescription_Store = new dojo.data.ItemFileReadStore({data:storeData, identifier:"id"}); 

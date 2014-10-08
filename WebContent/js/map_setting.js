@@ -107,7 +107,7 @@ function initializeMapping() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": "image/png",
@@ -124,7 +124,7 @@ function initializeMapping() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": service_JSON.format[0],
@@ -141,7 +141,7 @@ function initializeMapping() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": "image/png"
@@ -155,7 +155,7 @@ function initializeMapping() {
                 wms_layer = new ol.layer.Image({
                     title: layer_JSON.title[i],
                     source: new ol.source.ImageWMS({
-                        url: service_JSON.url,
+                        url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
                             "FORMAT": "image/png"
@@ -166,6 +166,7 @@ function initializeMapping() {
                 layer_Array[i] = wms_layer;
             }
         }
+        if (i < layer_Array.length-1) wms_layer.setVisible(false);
     }
 
     //initialize map params
@@ -175,6 +176,7 @@ function initializeMapping() {
     }
 
     initLayerControlWidget();
+    map.getView().fitExtent([-180,-90,180,90], map.getSize());
 }
 
 /**

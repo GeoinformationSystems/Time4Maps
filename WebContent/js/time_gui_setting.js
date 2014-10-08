@@ -1,18 +1,18 @@
 /**
  * Copyright 2012 Geoinformation Systems, TU Dresden
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 /**
@@ -29,19 +29,19 @@ var hasTimeData = false;
  * This method initializes the time gui filling process.
  */
 function initializeTimeGuiFilling() {
-	var period_JSON, time_JSON;
+    var period_JSON, time_JSON;
     wmsDescription_Store.fetchItemByIdentity({
         identity: "periodParam",
         onItem: function(item, request) {
             period_JSON = item;
         }
     });
-     
+
     //showing either date picker combobox with calender or time picker
-    
+
     //date picker with calendar
     if (period_JSON.hour[vis_layer_number] <= 0 && period_JSON.minute[vis_layer_number] <= 0 && period_JSON.second[vis_layer_number] <= 0) {
-    	dojo.declare("enDateTextBox", dijit.form.DateTextBox, {
+        dojo.declare("enDateTextBox", dijit.form.DateTextBox, {
             enFormat: {
                 selector: 'date',
                 datePattern: 'yyyy-MM-dd',
@@ -56,16 +56,16 @@ function initializeTimeGuiFilling() {
                 return dojo.date.locale.format(dateObject, this.enFormat);
             }
         });
-    	
-    	var b2 = new enDateTextBox({
- 	        value: "01-11-2006",
- 	        name: "fromDate_Input",
- 	        onChange: fromDateChanged
- 	    }, "fromDate_Input");
-    	
-    //time picker without calendar widget
+
+        var b2 = new enDateTextBox({
+            value: "01-11-2006",
+            name: "fromDate_Input",
+            onChange: fromDateChanged
+        }, "fromDate_Input");
+
+        //time picker without calendar widget
     } else {
-    	dojo.declare("enDateTextBox", dijit.form.TimeTextBox, {
+        dojo.declare("enDateTextBox", dijit.form.TimeTextBox, {
             enFormat: {
                 selector: 'date',
                 datePattern: 'yyyy-MM-dd hh:mm:sss',
@@ -80,23 +80,23 @@ function initializeTimeGuiFilling() {
                 return dojo.date.locale.format(dateObject, this.enFormat);
             }
         });
-    	
-    	var minMaxT = getMinMaxT();
-    	
-	    var b2 = new enDateTextBox({
-	    	constraints: {
-	            timePattern: 'HH:mm:ss',
-	            min: minMaxT[0], //'Thh:mm:ss',
-	            max: minMaxT[1], //'Thh:mm:ss',
-//	            clickableIncrement: 'T00:30:00', 	//define clickable stamps; always starts from 00:00
-//	            visibleIncrement: 'T00:30:00', 		//define visualized stamps; always starts from 00:00
-	            visibleRange: 'T01:00:00'
-	        }, 
-	        name: "fromDate_Input",
-	        onChange: fromDateChanged
-	    }, "fromDate_Input");
+
+        var minMaxT = getMinMaxT();
+
+        var b2 = new enDateTextBox({
+            constraints: {
+                timePattern: 'HH:mm:ss',
+                min: minMaxT[0], //'Thh:mm:ss',
+                max: minMaxT[1], //'Thh:mm:ss',
+                //	            clickableIncrement: 'T00:30:00', 	//define clickable stamps; always starts from 00:00
+                //	            visibleIncrement: 'T00:30:00', 		//define visualized stamps; always starts from 00:00
+                visibleRange: 'T01:00:00'
+            },
+            name: "fromDate_Input",
+            onChange: fromDateChanged
+        }, "fromDate_Input");
     }
-    
+
     setTimeValues();
 }
 
@@ -122,7 +122,7 @@ function updateTimeValues() {
 
     if (time_JSON.start[vis_layer_number] != null && time_JSON.end[vis_layer_number] != null && time_JSON.def[vis_layer_number] != null) {
         if (period_JSON.second[vis_layer_number] != null && period_JSON.minute[vis_layer_number] != null && period_JSON.hour[vis_layer_number] != null &&
-        period_JSON.day[vis_layer_number] != null && period_JSON.month[vis_layer_number] != null && period_JSON.year[vis_layer_number] != null) {
+            period_JSON.day[vis_layer_number] != null && period_JSON.month[vis_layer_number] != null && period_JSON.year[vis_layer_number] != null) {
             if (hasTimeData === false) {
                 showTimeGui();
                 if (dijit.byId('time_slider') === undefined)
@@ -133,9 +133,9 @@ function updateTimeValues() {
             combo = false;
             setSliderValues();
             setSliderLabelValues();
-            setDatePickerValues(); 
+            setDatePickerValues();
             bindFeatureControls("time");
- 
+
             if (dojo.byId('stateSelect'))
                 dojo.byId('stateSelect').parentNode.removeChild(dojo.byId('stateSelect'));
         } else {
@@ -149,7 +149,7 @@ function updateTimeValues() {
             hidePartTimeGui();
             setSliderLabelValues();
             bindFeatureControls("time");
-        } 
+        }
     } else {
         hasTimeData = false;
         hideTimeGui();
@@ -237,25 +237,25 @@ function setSliderValues() {
         var diffSecs_Int = dojo.date.difference(new Date(time_JSON.start[vis_layer_number]), new Date(time_JSON.end[vis_layer_number]), 'second');
         dijit.byId('time_slider').set("discreteValues", diffSecs_Int);
     }
-    
+
     if (period_JSON.minute[vis_layer_number] > 0) {
-    	var diffMins_Int = dojo.date.difference(new Date(time_JSON.start[vis_layer_number]), new Date(time_JSON.end[vis_layer_number]), 'minute');
+        var diffMins_Int = dojo.date.difference(new Date(time_JSON.start[vis_layer_number]), new Date(time_JSON.end[vis_layer_number]), 'minute');
         dijit.byId('time_slider').set("discreteValues", diffMins_Int);
     }
-    
+
     if (period_JSON.hour[vis_layer_number] > 0) {
         var diffHours_Int = dojo.date.difference(new Date(time_JSON.start[vis_layer_number]), new Date(time_JSON.end[vis_layer_number]), 'hour');
         dijit.byId('time_slider').set("discreteValues", diffHours_Int);
     }
-    
+
     if (period_JSON.day[vis_layer_number] > 0) {
         var diffDays_Int = dojo.date.difference(new Date(time_JSON.start[vis_layer_number]), new Date(time_JSON.end[vis_layer_number]), 'day');
-        dijit.byId('time_slider').set("discreteValues", diffDays_Int); 
+        dijit.byId('time_slider').set("discreteValues", diffDays_Int);
     }
 
     if (period_JSON.month[vis_layer_number] > 0) {
         var diffMonths_Int = dojo.date.difference(new Date(time_JSON.start[vis_layer_number]), new Date(time_JSON.end[vis_layer_number]), 'month');
-        dijit.byId('time_slider').set("discreteValues", diffMonths_Int); 
+        dijit.byId('time_slider').set("discreteValues", diffMonths_Int);
     }
 
     if (period_JSON.year[vis_layer_number] > 0) {
@@ -274,13 +274,17 @@ function setSliderLabelValues() {
     var time_JSON;
     wmsDescription_Store.fetchItemByIdentity({
         identity: "timeParam",
-        onItem: function(item, request) {  time_JSON = item; }
+        onItem: function(item, request) {
+            time_JSON = item;
+        }
     });
-    
+
     var period_JSON;
     wmsDescription_Store.fetchItemByIdentity({
         identity: "periodParam",
-        onItem: function(item, request) {  period_JSON = item; }
+        onItem: function(item, request) {
+            period_JSON = item;
+        }
     });
 
     var start_JSDate = new Date(time_JSON.start[vis_layer_number]);
@@ -298,7 +302,7 @@ function setSliderLabelValues() {
         selector: "date"
     });
     dojo.byId('time_end_label').innerHTML = end_DojoDate;
-    
+
     var period = "period: ";
     if (period_JSON.second[vis_layer_number] > 0) period += period_JSON.second[vis_layer_number] + " sec ";
     if (period_JSON.minute[vis_layer_number] > 0) period += period_JSON.minute[vis_layer_number] + " min ";
@@ -306,8 +310,10 @@ function setSliderLabelValues() {
     if (period_JSON.day[vis_layer_number] > 0) period += period_JSON.day[vis_layer_number] + " d ";
     if (period_JSON.month[vis_layer_number] > 0) period += period_JSON.month[vis_layer_number] + " mo ";
     if (period_JSON.year[vis_layer_number] > 0) period += period_JSON.year[vis_layer_number] + " y ";
-    
-    if (dojo.byId('time_period_label') != null) dojo.byId('time_period_label').innerHTML = period;    
+
+    if (dojo.byId('time_period_label') != null) {
+        (period != "period: ") ? (dojo.byId('time_period_label').innerHTML = period) : (dojo.byId('time_period_label').style.display = "none");
+    }
 }
 
 /**
@@ -339,22 +345,25 @@ function setDatePickerValues() {
  */
 function hideTimeGui() {
     if (dojo.byId('time') != null)
-        dojo.byId('time').style.visibility = 'hidden';
+        dojo.byId('time').style.display = 'none';
 }
 /**
  * The method shows time gui.
  */
 function showTimeGui() {
-    dojo.byId('time').style.visibility = 'visible';
+    dojo.byId('time').style.display = 'block';
 }
 /**
  * This method set time slider and play button invisible. Only combobox will be displayed.
  */
 function hidePartTimeGui() {
     if (dojo.byId('widget_fromDate_Input'))
-        dojo.byId('widget_fromDate_Input').style.visibility = 'hidden';
-    dojo.byId('play').style.visibility = 'hidden';
-    dojo.byId('stateSelect').style.visibility = "visible";
+        dojo.byId('widget_fromDate_Input').style.display = 'none';
+    dojo.byId('play').style.display = 'none';
+    if (dojo.byId("stateSelect")){
+    	dojo.byId('stateSelect').style.display = "block";
+    }
+    
 }
 
 /**
@@ -369,36 +378,38 @@ function switchTimeView() {
 }
 
 function getMinMaxT() {
-	var time_JSON;
-	wmsDescription_Store.fetchItemByIdentity({
+    var time_JSON;
+    wmsDescription_Store.fetchItemByIdentity({
         identity: "timeParam",
         onItem: function(item, request) {
             time_JSON = item;
         }
     });
-	var minT = "T", stDate = new Date(time_JSON.start[vis_layer_number]);
-	if (stDate.getHours() < 10) minT += "0" + stDate.getHours() + ":";
-	else minT += stDate.getHours() + ":";
-	
-	if (stDate.getMinutes() < 10) minT += "0" + stDate.getMinutes() + ":";
-	else minT += stDate.getMinutes() + ":";
-		
-	if (stDate.getSeconds() < 10) minT += "0" + stDate.getSeconds();
-	else minT += stDate.getSeconds();
-	
-	var maxT = "T", enDate = new Date(time_JSON.end[vis_layer_number]);
-	if (enDate.getHours() < 10) maxT += "0" + enDate.getHours() + ":";
-	else maxT += enDate.getHours() + ":";
-	
-	if (enDate.getMinutes() < 10) maxT += "0" + enDate.getMinutes() + ":";
-	else maxT += enDate.getMinutes() + ":";
-	
-	if (enDate.getSeconds() < 10) maxT += "0" + enDate.getSeconds();
-	else maxT += enDate.getSeconds();
-	
-	var minMaxT = [2];
-	minMaxT[0] = minT;
-	minMaxT[1] = maxT;
-	
-	return minMaxT; 
+    var minT = "T",
+        stDate = new Date(time_JSON.start[vis_layer_number]);
+    if (stDate.getHours() < 10) minT += "0" + stDate.getHours() + ":";
+    else minT += stDate.getHours() + ":";
+
+    if (stDate.getMinutes() < 10) minT += "0" + stDate.getMinutes() + ":";
+    else minT += stDate.getMinutes() + ":";
+
+    if (stDate.getSeconds() < 10) minT += "0" + stDate.getSeconds();
+    else minT += stDate.getSeconds();
+
+    var maxT = "T",
+        enDate = new Date(time_JSON.end[vis_layer_number]);
+    if (enDate.getHours() < 10) maxT += "0" + enDate.getHours() + ":";
+    else maxT += enDate.getHours() + ":";
+
+    if (enDate.getMinutes() < 10) maxT += "0" + enDate.getMinutes() + ":";
+    else maxT += enDate.getMinutes() + ":";
+
+    if (enDate.getSeconds() < 10) maxT += "0" + enDate.getSeconds();
+    else maxT += enDate.getSeconds();
+
+    var minMaxT = [2];
+    minMaxT[0] = minT;
+    minMaxT[1] = maxT;
+
+    return minMaxT;
 }
