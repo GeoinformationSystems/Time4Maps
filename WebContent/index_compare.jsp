@@ -42,7 +42,7 @@
 		]]>
 	</jsp:scriptlet>
 	<script src="js/dojo-release-1.9.0/dojo/dojo.js" type="text/javascript"></script> 
-	<script src="js/ol3/build/ol-simple.js" type="text/javascript"></script>
+	<script src="js/ol3/build/ol-debug.js" type="text/javascript"></script>
 	<!--script src="js/OpenLayers-2.12/OpenLayers.js" type="text/javascript"></script-->
 	<script src="js/required_dojo_scripts.js" type="text/javascript"></script>
 	<script src="js/initialize_scripts.js" type="text/javascript"></script>
@@ -57,7 +57,7 @@
 	<link rel="stylesheet" type="text/css" href="js/dojo-release-1.9.0/dijit/themes/claro/form/Button.css" />
 	<link href="css/basic_styles.css" rel="stylesheet" type="text/css" />
 	<link href="css/additional_styles.css" rel="stylesheet" type="text/css" /> 
-	<link href="js/ol3/build/ol.css" type="text/css" rel="stylesheet"/>
+	<link href="js/ol3/css/ol.css" type="text/css" rel="stylesheet"/>
 	<script>
 		var empty = "null";
 	

@@ -34,7 +34,7 @@ var service_JSON2 = null;
 var layer_JSON2 = null;
 
 function openPrintPreview() {
-    require(["dojox/gfx", "dojo/_base/window", "dojo/dom-construct", "dojo/io-query", "dojo/dom-style", "dojo/dom", "dojo/query", "dojo/NodeList-traverse"], function(gfx, win, domConstruct, ioQuery, domStyle, dom, query) {
+    require(["dojox/gfx", "dojo/_base/window", "dojo/dom-construct", "dojo/io-query", "dojo/dom-style", "dojo/dom", "dojo/query", "dojo/dom-attr", "dojo/NodeList-traverse"], function(gfx, win, domConstruct, ioQuery, domStyle, dom, query, domAttr) {
         var pWindowSettings = "width=" + window.screen.width / 1.3 + ", height=" + window.screen.height / 1.3 + ", scrollbars=yes";
         var pWindow = window.open("", "", pWindowSettings);
         var windowWidth = window.screen.width / 1.3;
@@ -43,10 +43,23 @@ function openPrintPreview() {
         }
 
         if (!ui.map2_) {
-            var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
-            var featureInfo_label = query("label", dom.byId("featureInfo_frame").contentDocument.body)[0].innerHTML;
-            var featureInfo_height = domStyle.get("featureInfo_frame", "height") + 10;
+            if (!domAttr.get("featureInfoAllLayer", "checked")) {
+                var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
+                var featureInfo_label = query("label", dom.byId("featureInfo_frame").contentDocument.body)[0].innerHTML;
+                var featureInfo_height = domStyle.get("featureInfo_frame", "height") + 10;
+            } else {
+                var featureInfo = new Array();
+                query("#featureInfo_div > div").forEach(function(node) {
+                    featureInfo.push(node);
+                });
+
+                if (featureInfo.length === 0 || featureInfo[0].innerHTML === "Click on the map to get feature information.") {
+                    var featureInfo_label = "Click on the map to get feature information.";
+                }
+            }
+
         } else {
+            //if (!domAttr.get("featureInfoAllLayer", "checked")) {
             var featureInfo1 = dom.byId("featureInfo_frame1").contentDocument.body.innerHTML;
             var featureInfo2 = dom.byId("featureInfo_frame2").contentDocument.body.innerHTML;
             var featureInfo_label1 = null;
@@ -65,6 +78,14 @@ function openPrintPreview() {
                     return node_.innerHTML;
                 })[0].innerHTML;
             });
+            /*}else{
+                var featureInfo = new Array();
+                query("#featureInfo_div > div").forEach(function(node){
+                    featureInfo.push(node);
+                });
+            } 
+            */
+
         }
 
         wmsDescription_Store.fetchItemByIdentity({
@@ -216,24 +237,46 @@ function openPrintPreview() {
         }, "wrapper");
 
         if (!ui.map2_) {
-            if (featureInfo_label != "Click on the map to get feature information.") {
-                domConstruct.create("h3", {
-                    id: "featureInfoLabel",
-                    innerHTML: "Feature Information",
-                    style: {
+            if (typeof featureInfo === "string") {
+                if (featureInfo_label != "Click on the map to get feature information.") {
+                    domConstruct.create("h3", {
+                        id: "featureInfoLabel",
+                        innerHTML: "Feature Information",
+                        style: {
 
-                    }
-                }, "featureInfo");
+                        }
+                    }, "featureInfo");
 
-                domConstruct.create("article", {
-                    id: "fi1",
-                    innerHTML: featureInfo,
-                    style: {
-                        "display": "inline-block",
-                        "maxWidth": "99%"
+                    domConstruct.create("article", {
+                        id: "fi1",
+                        innerHTML: featureInfo,
+                        style: {
+                            "display": "inline-block",
+                            "maxWidth": "99%"
+                        }
+                    }, "featureInfo");
+                }
+            } else {
+                if (featureInfo_label != "Click on the map to get feature information.") {
+                    domConstruct.create("h3", {
+                        id: "featureInfoLabel",
+                        innerHTML: "Feature Information",
+                        style: {}
+                    }, "featureInfo");
+                    for (var i = 0; i < featureInfo.length; i++) {
+                        domConstruct.create("article", {
+                            id: "fi" + i,
+                            innerHTML: featureInfo[i].innerHTML,
+                            style: {
+                                "display": "inline-block",
+                                "maxWidth": "99%",
+                                "paddingBottom": "20px"
+                            }
+                        }, "featureInfo");
                     }
-                }, "featureInfo");
+                }
             }
+
         } else {
             if (featureInfo_label1 != "Click on the map to get feature information." && featureInfo_label2 != "Click on the map to get feature information.") {
 
@@ -310,7 +353,7 @@ function openPrintPreview() {
         map.getLayers().forEach(function(layer) {
             if (layer instanceof ol.layer.Image && layer.getVisible()) {
                 layers += layer.getSource().getParams().LAYERS + ",";
-                (layer.getSource().getParams().time != undefined)?(time=layer.getSource().getParams().time):(time="x");
+                (layer.getSource().getParams().time != undefined) ? (time = layer.getSource().getParams().time) : (time = "x");
             }
         });
         //entferne ','
@@ -340,7 +383,7 @@ function openPrintPreview() {
             map2.getLayers().forEach(function(layer) {
                 if (layer instanceof ol.layer.Image && layer.getVisible()) {
                     layers2 += layer.getSource().getParams().LAYERS + ",";
-                    (layer.getSource().getParams().time != undefined)?(time=layer.getSource().getParams().time):(time="x");
+                    (layer.getSource().getParams().time != undefined) ? (time = layer.getSource().getParams().time) : (time = "x");
                 }
             });
             layers2 = layers2.slice(0, layers2.length - 1);
@@ -591,7 +634,7 @@ function getMapImage(data, map) {
         format: "&FORMAT=" + data.format,
         transparent: "&TRANSPARENT=true",
         layers: "&LAYERS=" + data.layers,
-        time: (data.time != "x")?("&TIME="+data.time):(""),
+        time: (data.time != "x") ? ("&TIME=" + data.time) : (""),
         srs: (data.version === "1.1.1") ? ("&SRS=" + data.srs) : ((data.srs === "EPSG:4326") ? ("&CRS=CRS:84") : ("&CRS=" + data.srs)),
         styles: "&STYLES=&WIDTH=" + Math.floor(styles.width / faktor.x) + "&HEIGHT=" + Math.floor(styles.height / faktor.y) + "&BBOX=" + styles.bbox
     }

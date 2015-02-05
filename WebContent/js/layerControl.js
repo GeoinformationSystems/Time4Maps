@@ -189,7 +189,7 @@ function initLayerControlWidget() {
                     left: "27px"
                 },
                 onclick: function() {
-                    query("input[type='checkbox']").forEach(function(widget) {
+                    query("#layerSwitcherCustom input[type='checkbox']").forEach(function(widget) {
                         (!checkedAll) ? (widget.checked = true) : (widget.checked = false);
                     });
 
@@ -245,8 +245,10 @@ function updateLegend() {
 }
 
 function updateFeatureInfo() {
-    require(["dojo/dom-attr", "dojo/io-query", "dijit/registry", "dojo/dom", "dojo/query"], function(domAttr, ioQuery, registry, dom, query) {
+    require(["dojo/dom-attr", "dojo/io-query", "dijit/registry", "dojo/dom", "dojo/query", "dojo/request/iframe", "dojo/dom-construct"], function(domAttr, ioQuery, registry, dom, query, iframe, domConstruct) {
+
         if (last_event != null) {
+            manageFeatureInfoWindow();
             var layer_JSON;
             wmsDescription_Store.fetchItemByIdentity({
                 identity: "layerDescriptionParam",
@@ -257,61 +259,145 @@ function updateFeatureInfo() {
 
             var layer = null;
             var visible = false;
-            for (var i = map.getLayers().array_.length - 1; i > 0; i--) {
-                layer = map.getLayers().array_[i];
-                if (layer.getVisible()) {
-                    visible = true;
-                    var source = featureInfoUrl;
-                    if (typeof source != null) {
-                        var sourceObject = ioQuery.queryToObject(source);
-                        var url = null;
-                        if (registry.byId('time_slider') != null) {
-                            url = "featureInfo_compare.jsp?url=" + service_url +
-                                "&request=GetFeatureInfo&service=WMS" +
-                                "&version=" + sourceObject.VERSION +
-                                "&query_layers=" + layer.getSource().getParams().LAYERS +
-                                "&crs=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.SRS) : (sourceObject.CRS)) +
-                                "&bbox=" + sourceObject.BBOX +
-                                "&width=" + sourceObject.WIDTH +
-                                "&height=" + sourceObject.HEIGHT +
-                                "&I=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.X) : (sourceObject.I)) +
-                                "&J=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.Y) : (sourceObject.J)) +
-                                "&time=" + cutDate(dijit.byId('time_slider').get('value'));
 
-                        } else if (registry.byId('stateSelect') != null) {
-                            url = "featureInfo_compare.jsp?url=" + service_url +
-                                "&request=GetFeatureInfo&service=WMS" +
-                                "&version=" + sourceObject.VERSION +
-                                "&query_layers=" + layer.getSource().getParams().LAYERS +
-                                "&crs=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.SRS) : (sourceObject.CRS)) +
-                                "&bbox=" + sourceObject.BBOX +
-                                "&width=" + sourceObject.WIDTH +
-                                "&height=" + sourceObject.HEIGHT +
-                                "&I=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.X) : (sourceObject.I)) +
-                                "&J=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.Y) : (sourceObject.J)) +
-                                "&time=" + cutDate(dijit.byId('stateSelect').get('value'));
-                        }
-                        if (url != null) {
-                            domAttr.set("featureInfo_frame", "src", url);
-                        }
+            if (domAttr.get("featureInfoAllLayer", "checked")) {
+                for (var i = map.getLayers().array_.length - 1; i > 0; i--) {
+                    layer = map.getLayers().array_[i];
+                    if (layer.getVisible()) {
+                        visible = true;
+                        var source = featureInfoUrl;
+                        if (source != null) {
+                            var sourceObject = ioQuery.queryToObject(source);
+                            var url = null;
+                            if (registry.byId('time_slider') != null) {
+                                url = "featureInfo_compare.jsp?url=" + service_url +
+                                    "&request=GetFeatureInfo&service=WMS" +
+                                    "&version=" + sourceObject.VERSION +
+                                    "&query_layers=" + layer.getSource().getParams().LAYERS +
+                                    "&crs=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.SRS) : (sourceObject.CRS)) +
+                                    "&bbox=" + sourceObject.BBOX +
+                                    "&width=" + sourceObject.WIDTH +
+                                    "&height=" + sourceObject.HEIGHT +
+                                    "&I=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.X) : (sourceObject.I)) +
+                                    "&J=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.Y) : (sourceObject.J)) +
+                                    "&time=" + cutDate(dijit.byId('time_slider').get('value'));
 
+                            } else if (registry.byId('stateSelect') != null) {
+                                url = "featureInfo_compare.jsp?url=" + service_url +
+                                    "&request=GetFeatureInfo&service=WMS" +
+                                    "&version=" + sourceObject.VERSION +
+                                    "&query_layers=" + layer.getSource().getParams().LAYERS +
+                                    "&crs=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.SRS) : (sourceObject.CRS)) +
+                                    "&bbox=" + sourceObject.BBOX +
+                                    "&width=" + sourceObject.WIDTH +
+                                    "&height=" + sourceObject.HEIGHT +
+                                    "&I=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.X) : (sourceObject.I)) +
+                                    "&J=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.Y) : (sourceObject.J)) +
+                                    "&time=" + cutDate(dijit.byId('stateSelect').get('value'));
+                            }
+
+                            if (url != null) {
+                                iframe(url, {
+                                    handleAs: "html"
+                                }).then(function(html) {
+                                        domConstruct.create("div", {
+                                            id: "featureInfo_multi",
+                                            innerHTML: query("#featureinfo", html.body)[0].innerHTML,
+                                            style: {
+                                                "display": "inline-block",
+                                                "margin": "0 5px 10px 5px"
+                                            }
+                                        }, "featureInfo_div");
+                                    },
+                                    function(error) {
+                                        console.log("Fehler beim Auslesen der FeatureInfo :" + error);
+                                    });
+                            }
+                        }
                     }
-                    break;
+                }
+
+                //get FeatureInfoURI
+                if (!visible) {
+                    query("#featureInfo_div > div").forEach(domConstruct.destroy);
+                    domConstruct.create("div", {
+                        id: "featureInfo_multi",
+                        innerHTML: "Click on the map to get feature information.",
+                        style: {
+                            "display": "inline-block",
+                            "margin": "0 5px 10px 5px"
+                        }
+                    }, "featureInfo_div");
+                    //remove Overlays && Click-Position
+                    map.getOverlays().forEach(function(overlay) {
+                        map.removeOverlay(overlay);
+                    });
+                    last_event = null;
+                    source = null;
+                }
+
+
+            } else {
+                for (var i = map.getLayers().array_.length - 1; i > 0; i--) {
+                    layer = map.getLayers().array_[i];
+                    if (layer.getVisible()) {
+                        visible = true;
+                        var source = featureInfoUrl;
+                        if (typeof source != null) {
+                            var sourceObject = ioQuery.queryToObject(source);
+                            var url = null;
+                            if (registry.byId('time_slider') != null) {
+                                url = "featureInfo_compare.jsp?url=" + service_url +
+                                    "&request=GetFeatureInfo&service=WMS" +
+                                    "&version=" + sourceObject.VERSION +
+                                    "&query_layers=" + layer.getSource().getParams().LAYERS +
+                                    "&crs=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.SRS) : (sourceObject.CRS)) +
+                                    "&bbox=" + sourceObject.BBOX +
+                                    "&width=" + sourceObject.WIDTH +
+                                    "&height=" + sourceObject.HEIGHT +
+                                    "&I=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.X) : (sourceObject.I)) +
+                                    "&J=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.Y) : (sourceObject.J)) +
+                                    "&time=" + cutDate(dijit.byId('time_slider').get('value'));
+
+                            } else if (registry.byId('stateSelect') != null) {
+                                url = "featureInfo_compare.jsp?url=" + service_url +
+                                    "&request=GetFeatureInfo&service=WMS" +
+                                    "&version=" + sourceObject.VERSION +
+                                    "&query_layers=" + layer.getSource().getParams().LAYERS +
+                                    "&crs=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.SRS) : (sourceObject.CRS)) +
+                                    "&bbox=" + sourceObject.BBOX +
+                                    "&width=" + sourceObject.WIDTH +
+                                    "&height=" + sourceObject.HEIGHT +
+                                    "&I=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.X) : (sourceObject.I)) +
+                                    "&J=" + ((sourceObject.VERSION === "1.1.1") ? (sourceObject.Y) : (sourceObject.J)) +
+                                    "&time=" + cutDate(dijit.byId('stateSelect').get('value'));
+                            }
+                            if (url != null) {
+                                domAttr.set("featureInfo_frame", "src", url);
+                            }
+
+                        }
+                        break;
+                    }
+                }
+
+                //get FeatureInfoURI
+                if (!visible) {
+                    //Click on the map to get feature information.
+                    var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
+                    query("label", dom.byId("featureInfo_frame").contentDocument.body)[0].innerHTML = "Click on the map to get feature information.";
+                    //remove Overlays && Click-Position
+                    map.getOverlays().forEach(function(overlay) {
+                        map.removeOverlay(overlay);
+                    });
+                    last_event = null;
+                    source = null;
                 }
             }
-
-            //get FeatureInfoURI
-            if (!visible) {
-                //Click on the map to get feature information.
-                var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
-                query("label", dom.byId("featureInfo_frame").contentDocument.body)[0].innerHTML = "Click on the map to get feature information.";
-                //remove Overlays && Click-Position
-                map.getOverlays().forEach(function(overlay) {
-                    map.removeOverlay(overlay);
-                });
-                last_event = null;
-                source = null;
-            }
+        } else {
+            var featureInfo = dom.byId("featureInfo_frame").contentDocument.body.innerHTML;
+            query("label", dom.byId("featureInfo_frame").contentDocument.body)[0].innerHTML = "Click on the map to get feature information.";
         }
     });
+
 }

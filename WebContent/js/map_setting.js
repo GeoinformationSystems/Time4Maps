@@ -1,18 +1,18 @@
 /**
  * Copyright 2012 Geoinformation Systems, TU Dresden
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 /**
@@ -66,7 +66,7 @@ function initializeMapping() {
         onItem: function(item, request) {
             period_JSON = item;
         }
-    }); 
+    });
 
     map = new ol.Map({
         renderer: "canvas",
@@ -84,9 +84,9 @@ function initializeMapping() {
                 })
             })
         ],
-        view: new ol.View2D({
+        view: new ol.View({
             center: transform(0, 0),
-            zoom: 0,
+            zoom: 0.,
             projection: "EPSG:4326"
         }),
         controls: [
@@ -110,8 +110,8 @@ function initializeMapping() {
                         url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
-                            "FORMAT": "image/png",
-                            "VERSION": service_JSON.version[0],
+                            //"FORMAT": "image/png",
+                            //"VERSION": service_JSON.version[0],
                             "time": cutDate(new Date(time_JSON.def[i]))
                         }
                     })
@@ -127,8 +127,8 @@ function initializeMapping() {
                         url: service_JSON.map, //service_JSON.url,
                         params: {
                             "LAYERS": layer_JSON.name[i],
-                            "FORMAT": service_JSON.format[0],
-                            "VERSION": service_JSON.version[0],
+                            //"FORMAT": service_JSON.format[0],
+                            //"VERSION": service_JSON.version[0],
                             "time": cutDate(new Date(time_JSON.def[i]))
                         }
                     })
@@ -143,8 +143,8 @@ function initializeMapping() {
                     source: new ol.source.ImageWMS({
                         url: service_JSON.map, //service_JSON.url,
                         params: {
-                            "LAYERS": layer_JSON.name[i],
-                            "FORMAT": "image/png"
+                            "LAYERS": layer_JSON.name[i]
+                            //"FORMAT": "image/png"
                         }
                     })
                 });
@@ -157,8 +157,8 @@ function initializeMapping() {
                     source: new ol.source.ImageWMS({
                         url: service_JSON.map, //service_JSON.url,
                         params: {
-                            "LAYERS": layer_JSON.name[i],
-                            "FORMAT": "image/png"
+                            "LAYERS": layer_JSON.name[i]
+                            //"FORMAT": "image/png"
                         }
                     })
                 });
@@ -166,17 +166,17 @@ function initializeMapping() {
                 layer_Array[i] = wms_layer;
             }
         }
-        if (i < layer_Array.length-1) wms_layer.setVisible(false);
+        if (i < layer_Array.length - 1) wms_layer.setVisible(false);
     }
 
     //initialize map params
-    setLegendValues(layer_Array.length - 1); 
+    setLegendValues(layer_Array.length - 1);
     if (markers != null) {
         markers = null;
     }
 
     initLayerControlWidget();
-    map.getView().fitExtent([-180,-90,180,90], map.getSize());
+    map.getView().fitExtent([-180, -90, 180, 90], map.getSize());
 }
 
 /**
@@ -192,7 +192,7 @@ function setLegendValues(pos_Array) {
             legend_JSON = item;
         }
     });
- 
+
     if (legend_JSON.url === null || legend_JSON.url == "" || legend_JSON.url === undefined || legend_JSON.url[pos_Array] === "null" || legend_JSON.url[pos_Array] === null || legend_JSON.url[pos_Array] === undefined) {
         hideLegend();
     } else {
@@ -206,7 +206,7 @@ function setLegendValues(pos_Array) {
 
         //set visibility for legend image
         showLegend();
- 
+
         dojo.byId('legend_frame').src = legend_JSON.url[pos_Array] + "&height=" + legend_JSON.height[pos_Array] + "&width=" + legend_JSON.width[pos_Array];
     }
 }
@@ -233,26 +233,26 @@ function showLegend() {
 var lastDate;
 
 function setMapTime(date_JSDate) {
-	for (var i = 0; i < layer_Array.length; i++) {
+    for (var i = 0; i < layer_Array.length; i++) {
         if (combo == false) {
             var newD = cutDate(date_JSDate);
-            if (newD != "0NaN-NaN" && newD != "0NaN") { 
+            if (newD != "0NaN-NaN" && newD != "0NaN") {
                 layer_Array[i].getSource().updateParams({
                     'time': newD
                 });
                 lastDate = newD;
-            } else { 
+            } else {
                 newD = cutDate(lastDate);
                 layer_Array[i].getSource().updateParams({
                     'time': newD
-                }); 
+                });
             }
         } else {
-        	
-        	if (date_JSDate.indexOf("+02:00") > 0) { 
-        		date_JSDate = date_JSDate.replace(/\+02:00/g, "0Z");
-        	}
-        	
+
+            if (date_JSDate.indexOf("+02:00") > 0) {
+                date_JSDate = date_JSDate.replace(/\+02:00/g, "0Z");
+            }
+
             layer_Array[i].getSource().updateParams({
                 'time': date_JSDate
             });

@@ -54,18 +54,6 @@
 			dojo.byId('feature_label').innerHTML = "<%=featureInfo%>";
 			if (dojo.byId('feature_label').innerHTML == "")
 				dojo.byId('feature_label').innerHTML = "Click on the map to get feature information."	
-			/*
-			require(["dojo/query", "dojo/dom"], function(query, dom) {
-				dom.byId('feature_label').innerHTML = "<%=featureInfo%>";
-				query("#feature_label").forEach(function(node) {
-					query("div", node).forEach(function(node_) { 
-						if (node_.innerHTML === "") {
-							node_.innerHTML = "Click on the map to get feature information.";	
-						}
-					});
-				});
-			});
-			*/
 		}
 		
 	</script>

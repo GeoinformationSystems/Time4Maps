@@ -46,7 +46,7 @@
         <link rel="stylesheet" type="text/css" href="js/dojo-release-1.9.0/dijit/themes/claro/form/Button.css" />
         <link href="css/basic_styles.css" rel="stylesheet" type="text/css" />
         <link href="css/additional_styles.css" rel="stylesheet" type="text/css" /> 
-        <link href="js/ol3/build/ol.css" type="text/css" rel="stylesheet"/>
+        <link href="js/ol3/css/ol.css" type="text/css" rel="stylesheet"/>
         <script src="js/dojo-release-1.9.0/dojo/dojo.js" type="text/javascript" data-dojo-config=""></script>
         <script src="js/required_dojo_scripts.js" type="text/javascript"></script>
         <script src="js/initialize_scripts.js" type="text/javascript"></script>
@@ -56,9 +56,7 @@
         <script src="js/time_logic.js" type="text/javascript"></script>
         <script src="js/time_gui_setting.js" type="text/javascript"></script>
         <script src="js/time_combobox.js" type="text/javascript"></script>
-        <script src="js/ol3/build/ol-simple.js" type="text/javascript"></script>
-        <!--script src="js/OpenLayers-2.12/OpenLayers.js" type="text/javascript"></script>
-        <script src="js/OpenLayers-2.12/deprecated.js" type="text/javascript"></script-->
+        <script src="js/ol3/build/ol-debug.js" type="text/javascript"></script>
         <script src="js/layerControl.js" type="text/javascript"></script>
         <script src="js/print.js" type="text/javascript"></script>
         <script>
@@ -135,7 +133,11 @@
                 <div id="time_slider" style="z-index:-12 !important;"></div>								
             </div>
         </div>
-        <div id="featureInfo_div" style="left:830px;top:350px;height:180px;width:330px;">  
+        <div style="left: 825px; top: 344px; height: 32px;position: absolute;">
+        	 <input type="checkbox" id="featureInfoAllLayer" onchange="updateFeatureInfo();">
+        	 <label>Get Feature Information Of All Visible Layer</label>       
+        </div>
+        <div id="featureInfo_div" style="left:830px;top:370px;height:180px;width:330px;">  
             <iframe style="border:none;width:330px;height:180px;" id="featureInfo_frame" src="featureInfo.jsp" ></iframe>  
         </div> 
         <div id="legend_div" style="left:830px;top:60px;position:absolute;height:280px;width:330px;overflow:auto;">  

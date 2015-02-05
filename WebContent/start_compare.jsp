@@ -51,13 +51,13 @@
 	<script src="js/time_logic_compare.js" type="text/javascript"></script>
 	<script src="js/time_gui_setting_compare.js" type="text/javascript"></script>
 	<script src="js/time_combobox_compare.js" type="text/javascript"></script>
-	<script src="js/ol3/build/ol-simple.js" type="text/javascript"></script>
+	<script src="js/ol3/build/ol-debug.js" type="text/javascript"></script>
 	<script src="js/print.js" type="text/javascript"></script>
 	
 	<link rel="stylesheet" type="text/css" href="js/dojo-release-1.9.0/dijit/themes/claro/claro.css" />
 	<link href="css/basic_styles.css" rel="stylesheet" type="text/css" />
 	<link href="css/additional_styles.css" rel="stylesheet" type="text/css" />
-	<link href="js/ol3/build/ol.css" type="text/css" rel="stylesheet"/>
+	<link href="js/ol3/css/ol.css" type="text/css" rel="stylesheet"/>
 	
 	<script>
 		if (<%=jsonString%> == null || <%=jsonString2%> == null) { 

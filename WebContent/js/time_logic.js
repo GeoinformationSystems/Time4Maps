@@ -88,16 +88,19 @@ function fromDateChanged(newFrom_DojoDate) { //fired when from date is set
         
         dijit.byId('time_slider').set("value", correctDate(newFrom_JSDate, 0).getTime());
         setMapTime(newFrom_JSDate);
+        updateFeatureInfo();
+        /*
         if (last_event != null) { 
             var source = featureInfoUrl;
             if (typeof source != null) {
                 require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                     var sourceObject = ioQuery.queryToObject(source);
-                    var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + sourceObject.SRS + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + sourceObject.X + "&J=" + sourceObject.Y + "&time=" + cutDate(dijit.byId('time_slider').get('value'));
+                    var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J) + "&time=" + cutDate(dijit.byId('time_slider').get('value'));
                     domAttr.set("featureInfo_frame", "src", url);
                 });
             }
         }
+        */
     } else if (lastDate != null && lastDate != "0NaN-NaN") {
         newFrom_DojoDate = lastDate;
 
@@ -105,17 +108,19 @@ function fromDateChanged(newFrom_DojoDate) { //fired when from date is set
 
         dijit.byId('time_slider').set("value", correctDate(newFrom_JSDate, 0).getTime());
         setMapTime(newFrom_JSDate);
-
+        updateFeatureInfo();
+/*
         if (last_event != null) { 
             var source = featureInfoUrl;
             if (typeof source != null) {
                 require(["dojo/dom-attr", "dojo/io-query"], function(domAttr, ioQuery) {
                     var sourceObject = ioQuery.queryToObject(source);
-                    var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + sourceObject.SRS + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + sourceObject.X + "&J=" + sourceObject.Y + "&time=" + cutDate(dijit.byId('time_slider').get('value'));
+                    var url = "featureInfo_compare.jsp?url=" + service_url + "&request=GetFeatureInfo&service=WMS" + "&version=" + sourceObject.VERSION + "&query_layers=" + sourceObject.QUERY_LAYERS + "&crs=" + (typeof sourceObject.CRS != "undefined" ? sourceObject.CRS : sourceObject.SRS) + "&bbox=" + sourceObject.BBOX + "&width=" + sourceObject.WIDTH + "&height=" + sourceObject.HEIGHT + "&I=" + (typeof sourceObject.X != "undefined" ? sourceObject.X : sourceObject.I) + "&J=" + (typeof sourceObject.Y != "undefined" ? sourceObject.Y : sourceObject.J) + "&time=" + cutDate(dijit.byId('time_slider').get('value'));
                     domAttr.set("featureInfo_frame", "src", url);
                 });
             }
         }
+        */
     }
 }
 

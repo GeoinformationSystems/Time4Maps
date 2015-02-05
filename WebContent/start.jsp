@@ -50,14 +50,14 @@
 	<script src="js/time_logic.js" type="text/javascript"></script>
 	<script src="js/time_gui_setting.js" type="text/javascript"></script>
 	<script src="js/time_combobox.js" type="text/javascript"></script>  
-	<script src="js/ol3/build/ol-simple.js" type="text/javascript"></script>
+	<script src="js/ol3/build/ol-debug.js" type="text/javascript"></script>
 	<script src="js/layerControl.js" type="text/javascript"></script>	        
 	<script src="js/print.js" type="text/javascript"></script>
 	
 	<link href="js/dojo-release-1.9.0/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css" />
 	<link href="css/basic_styles.css" rel="stylesheet" type="text/css" />
 	<link href="css/additional_styles.css" rel="stylesheet" type="text/css" /> 
-	<link href="js/ol3/build/ol.css" type="text/css" rel="stylesheet"/>
+	<link href="js/ol3/css/ol.css" type="text/css" rel="stylesheet"/>
 	
 	<script>
 		if (<%=jsonString%> == null) { 
@@ -144,7 +144,11 @@
     	<p>Technische Universitaet Dresden.</p>
     	<a id="footer_link_glues" href="http://modul-a.nachhaltiges-landmanagement.de/en/module-a/">GLUES - Global Assessment of Land Use dynamics on Greenhouse Gas Emissions and Ecosystem Services.</a>
   	</div>
-	<div id="featureInfo_div" style="left:930px;top:450px;height:180px;width:330px;">  
+  	<div style="right: 144px; top: 443px; height: 32px;position: absolute;">
+        	 <input type="checkbox" id="featureInfoAllLayer" onchange="updateFeatureInfo();">
+        	 <label>Get Feature Information Of All Visible Layer</label>       
+        </div>
+	<div id="featureInfo_div" style="left:930px;top:470px;height:180px;width:330px;">  
    		<iframe style="border:none;width:330px;height:180px;" id="featureInfo_frame" src="featureInfo.jsp" ></iframe>  
     </div> 
    	<div id="legend_div" style="left:930px;top:160px;position:absolute;height:280px;width:330px;overflow:auto;">  

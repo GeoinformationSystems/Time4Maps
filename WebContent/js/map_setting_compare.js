@@ -87,7 +87,7 @@ function setMapValues() {
                 })
             })
         ],
-        view: new ol.View2D({
+        view: new ol.View({
             center: transform(0, 0),
             zoom: 0,
             projection: "EPSG:4326"
@@ -215,7 +215,7 @@ function setMapValues() {
                 })
             })
         ],
-        view: new ol.View2D({
+        view: new ol.View({
             center: transform(0, 0),
             zoom: 0,
             projection: "EPSG:4326"

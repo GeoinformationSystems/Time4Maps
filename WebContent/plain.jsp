@@ -50,7 +50,7 @@
 		<link rel="stylesheet" type="text/css" href="js/dojo-release-1.9.0/dijit/themes/claro/claro.css" />
 		
 		<link rel="stylesheet" type="text/css" href="css/plain_styles.css" />
-		<link href="js/ol3/build/ol.css" type="text/css" rel="stylesheet"/>
+		<link href="js/ol3/css/ol.css" type="text/css" rel="stylesheet"/>
 		
 		<script src="js/required_dojo_scripts.js" type="text/javascript"></script>
 		<script src="js/initialize_scripts.js" type="text/javascript"></script>
@@ -60,7 +60,7 @@
 		<script src="js/time_logic.js" type="text/javascript"></script>
 		<script src="js/time_gui_setting.js" type="text/javascript"></script>
 		<script src="js/time_combobox.js" type="text/javascript"></script>
-		<script src="js/ol3/build/ol-simple.js" type="text/javascript"></script> 
+		<script src="js/ol3/build/ol-debug.js" type="text/javascript"></script> 
 		<script src="js/layerControl.js" type="text/javascript"></script>
 		<script src="js/print.js" type="text/javascript"></script>
 		<script>
@@ -193,7 +193,14 @@
 			</div>
 			<div role="contentinfo" data-dojo-type="dijit/layout/ContentPane"
 				data-dojo-props='id:"border-right-bottom", region:"bottom", style:"height: 270px;", splitter:true'>
-				<iframe style="border: none;height:400px;" id="featureInfo_frame" src="featureInfo.jsp"></iframe>
+				<div id="featureInfo_div">
+					<iframe style="border: none;height:400px;" id="featureInfo_frame" src="featureInfo.jsp"></iframe>
+				</div>	
+			</div>
+			<div role="contentinfo" data-dojo-type="dijit/layout/ContentPane"
+				data-dojo-props='id:"border-right-bottom-bottom", region:"bottom", style:"height: 20px;", splitter:true'>
+				<input type="checkbox" id="featureInfoAllLayer" onchange="updateFeatureInfo();">
+        	 	<label>Get Feature Information Of All Visible Layer</label>     
 			</div>
 		</div>
 	</div>

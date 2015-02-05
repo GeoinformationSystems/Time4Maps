@@ -134,7 +134,7 @@ function updateTimeValues() {
             setSliderValues();
             setSliderLabelValues();
             setDatePickerValues();
-            bindFeatureControls("time");
+            //bindFeatureControls("time");
 
             if (dojo.byId('stateSelect'))
                 dojo.byId('stateSelect').parentNode.removeChild(dojo.byId('stateSelect'));
@@ -148,12 +148,12 @@ function updateTimeValues() {
             combo = true;
             hidePartTimeGui();
             setSliderLabelValues();
-            bindFeatureControls("time");
+            //bindFeatureControls("time");
         }
     } else {
         hasTimeData = false;
         hideTimeGui();
-        bindFeatureControls("");
+        //bindFeatureControls("");
     }
 }
 
@@ -360,10 +360,10 @@ function hidePartTimeGui() {
     if (dojo.byId('widget_fromDate_Input'))
         dojo.byId('widget_fromDate_Input').style.display = 'none';
     dojo.byId('play').style.display = 'none';
-    if (dojo.byId("stateSelect")){
-    	dojo.byId('stateSelect').style.display = "block";
+    if (dojo.byId("stateSelect")) {
+        dojo.byId('stateSelect').style.display = "block";
     }
-    
+
 }
 
 /**
