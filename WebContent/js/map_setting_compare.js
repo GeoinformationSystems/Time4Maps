@@ -1,18 +1,18 @@
 /**
  * Copyright 2012 Geoinformation Systems, TU Dresden
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 /**
@@ -80,9 +80,9 @@ function setMapValues() {
                 source: new ol.source.TileWMS({
                     url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
                     params: {
-                        'VERSION': '1.1.1',
+                        'VERSION': ((service_JSON2.version[0] === "1.3.0") ? ("1.3.0") : ("1.1.1")),
                         'LAYERS': 'basic',
-                        'FORMAT': 'image/jpeg'
+                        'FORMAT': 'image/png'
                     }
                 })
             })
@@ -90,11 +90,11 @@ function setMapValues() {
         view: new ol.View({
             center: transform(0, 0),
             zoom: 0,
-            projection: "EPSG:4326"
+            projection: ((service_JSON2.version[0] === "1.3.0") ? ("CRS:84") : ("EPSG:4326"))
         }),
         controls: [
             new ol.control.MousePosition({
-                projection: "EPSG:4326"
+                projection: ((service_JSON2.version[0] === "1.3.0") ? ("CRS:84") : ("EPSG:4326"))
             }),
             new ol.control.ZoomSlider()
         ]
@@ -168,14 +168,14 @@ function setMapValues() {
                 layer_Array2[i] = wms_layer2;
             }
         }
-        if (i < layer_Array2.length-1) wms_layer2.setVisible(false);
+        if (i < layer_Array2.length - 1) wms_layer2.setVisible(false);
     }
 
     setLegendValues(0, 0);
     if (markers2 != null) {
         markers2 = null;
     }
- 
+
     var service_JSON = null;
     var layer_JSON = null;
     var time_JSON = null;
@@ -198,7 +198,7 @@ function setMapValues() {
             time_JSON = item;
         }
     });
-  
+
     map = new ol.Map({
         renderer: "canvas",
         target: "map",
@@ -208,9 +208,9 @@ function setMapValues() {
                 source: new ol.source.TileWMS({
                     url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
                     params: {
-                        'VERSION': '1.1.1',
+                        'VERSION': ((service_JSON.version[0] === "1.3.0") ? ("1.3.0") : ("1.1.1")),
                         'LAYERS': 'basic',
-                        'FORMAT': 'image/jpeg'
+                        'FORMAT': 'image/png'
                     }
                 })
             })
@@ -218,11 +218,11 @@ function setMapValues() {
         view: new ol.View({
             center: transform(0, 0),
             zoom: 0,
-            projection: "EPSG:4326"
+            projection: ((service_JSON.version[0] === "1.3.0") ? ("CRS:84") : ("EPSG:4326"))
         }),
         controls: [
             new ol.control.MousePosition({
-                projection: "EPSG:4326"
+                projection: ((service_JSON.version[0] === "1.3.0") ? ("CRS:84") : ("EPSG:4326"))
             }),
             new ol.control.ZoomSlider()
         ]
@@ -298,7 +298,7 @@ function setMapValues() {
                 layer_Array[i] = wms_layer;
             }
         }
-        if (i < layer_Array.length-1) wms_layer.setVisible(false);
+        if (i < layer_Array.length - 1) wms_layer.setVisible(false);
     }
 
     if (markers != null) {
@@ -321,7 +321,7 @@ function setMapValues() {
     map2.getView().on("change:center", function() {
         map.setView(map2.getView());
     });
- 
+
 }
 
 var leg_1 = false;

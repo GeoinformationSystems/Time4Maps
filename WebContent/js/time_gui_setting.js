@@ -336,7 +336,8 @@ function setDatePickerValues() {
         datePattern: "dd.MM.yyyy",
         selector: "month"
     });
-    setMapTime(default_DojoDate);
+    //setMapTime(default_DojoDate);
+    setMapTime(default_JSDate);
 
 }
 

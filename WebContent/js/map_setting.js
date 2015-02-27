@@ -77,21 +77,22 @@ function initializeMapping() {
                 source: new ol.source.TileWMS({
                     url: 'http://vmap0.tiles.osgeo.org/wms/vmap0',
                     params: {
-                        'VERSION': '1.1.1',
+                        'VERSION': ((service_JSON.version[0] === "1.3.0") ? ("1.3.0") : ("1.1.1")),
                         'LAYERS': 'basic',
-                        'FORMAT': 'image/jpeg'
+                        "FORMAT": "image/png"
+
                     }
                 })
             })
         ],
         view: new ol.View({
             center: transform(0, 0),
-            zoom: 0.,
-            projection: "EPSG:4326"
+            zoom: 0,
+            projection: ((service_JSON.version[0] === "1.3.0") ? ("CRS:84") : ("EPSG:4326"))
         }),
         controls: [
             new ol.control.MousePosition({
-                projection: "EPSG:4326"
+                projection: ((service_JSON.version[0] === "1.3.0") ? ("CRS:84") : ("EPSG:4326"))
             }),
             new ol.control.ZoomSlider()
         ]
